@@ -25,6 +25,9 @@ const char *stim::mbqc_decomposition(GateType gate) {
         case GateType::ELSE_CORRELATED_ERROR:
         case GateType::HERALDED_ERASE:
         case GateType::HERALDED_PAULI_CHANNEL_1:
+        case GateType::ROTION_X:
+        case GateType::ROTION_Y:
+        case GateType::ROTION_Z:
             return nullptr;
         case GateType::MX:
             return R"CIRCUIT(

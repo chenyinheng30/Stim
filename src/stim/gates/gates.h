@@ -88,7 +88,7 @@ constexpr inline uint16_t gate_name_to_hash(std::string_view text) {
     return result & 0x1FF;
 }
 
-constexpr size_t NUM_DEFINED_GATES = 82;
+constexpr size_t NUM_DEFINED_GATES = 85;
 
 enum class GateType : uint8_t {
     NOT_A_GATE = 0,
@@ -187,6 +187,10 @@ enum class GateType : uint8_t {
     MXX,
     MYY,
     MZZ,
+    // Syntax-only parameterized rotation gates
+    ROTION_X,
+    ROTION_Y,
+    ROTION_Z,
 };
 
 enum GateFlags : uint16_t {
@@ -369,6 +373,7 @@ struct GateDataMap {
     void add_gate_data_pauli(bool &failed);
     void add_gate_data_period_3(bool &failed);
     void add_gate_data_period_4(bool &failed);
+    void add_gate_data_rotations(bool &failed);
     void add_gate_data_pp(bool &failed);
     void add_gate_data_swaps(bool &failed);
     void add_gate_data_pair_measure(bool &failed);

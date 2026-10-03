@@ -57,6 +57,10 @@
     - [ZCX](#ZCX)
     - [ZCY](#ZCY)
     - [ZCZ](#ZCZ)
+- Parameterized Rotation Gates (syntax only)
+    - [ROTION_X](#ROTION_X)
+    - [ROTION_Y](#ROTION_Y)
+    - [ROTION_Z](#ROTION_Z)
 - Noise Channels
     - [CORRELATED_ERROR](#CORRELATED_ERROR)
     - [DEPOLARIZE1](#DEPOLARIZE1)
@@ -5036,4 +5040,64 @@ Example:
 
     # Empty time step.
     TICK
+
+<a name="ROTION_X"></a>
+### The 'ROTION_X' Instruction
+
+Represents a parameterized rotation about the X axis in a circuit.
+
+This instruction is syntax-only. Stim retains it when parsing and printing circuits, but its
+built-in simulators do not implement it.
+
+Parens Arguments:
+
+    The rotation angle in radians.
+
+Targets:
+
+    The qubits to rotate. The instruction broadcasts over multiple qubit targets.
+
+Example:
+
+    ROTION_X(0.25) 0
+
+<a name="ROTION_Y"></a>
+### The 'ROTION_Y' Instruction
+
+Represents a parameterized rotation about the Y axis in a circuit.
+
+This instruction is syntax-only. Stim retains it when parsing and printing circuits, but its
+built-in simulators do not implement it.
+
+Parens Arguments:
+
+    The rotation angle in radians.
+
+Targets:
+
+    The qubits to rotate. The instruction broadcasts over multiple qubit targets.
+
+Example:
+
+    ROTION_Y(0.25) 0
+
+<a name="ROTION_Z"></a>
+### The 'ROTION_Z' Instruction
+
+Represents a parameterized rotation about the Z axis in a circuit.
+
+This instruction is syntax-only. Stim retains it when parsing and printing circuits, but its
+built-in simulators do not implement it.
+
+Parens Arguments:
+
+    The rotation angle in radians.
+
+Targets:
+
+    The qubits to rotate. The instruction broadcasts over multiple qubit targets.
+
+Example:
+
+    ROTION_Z(0.25) 0
 

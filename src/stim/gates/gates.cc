@@ -30,6 +30,7 @@ GateDataMap::GateDataMap() {
     add_gate_data_pauli(failed);
     add_gate_data_period_3(failed);
     add_gate_data_period_4(failed);
+    add_gate_data_rotations(failed);
     add_gate_data_pp(failed);
     add_gate_data_swaps(failed);
     add_gate_data_pair_measure(failed);

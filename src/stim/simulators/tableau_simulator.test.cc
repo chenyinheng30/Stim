@@ -50,6 +50,11 @@ TEST_EACH_WORD_SIZE_W(TableauSimulator, identity, {
     ASSERT_EQ(s.measurement_record.storage, (std::vector<bool>{false, true}));
 })
 
+TEST_EACH_WORD_SIZE_W(TableauSimulator, rejects_syntax_only_rotation_gates, {
+    TableauSimulator<W> sim(INDEPENDENT_TEST_RNG(), 1);
+    EXPECT_THROW(sim.safe_do_circuit(Circuit("ROTION_X(0.25) 0")), std::invalid_argument);
+})
+
 TEST_EACH_WORD_SIZE_W(TableauSimulator, bit_flip, {
     auto s = TableauSimulator<W>(INDEPENDENT_TEST_RNG(), 1);
     s.do_H_XZ(OpDat(0));

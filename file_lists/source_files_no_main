@@ -47,6 +47,7 @@ src/stim/gates/gate_data_pauli.cc
 src/stim/gates/gate_data_pauli_product.cc
 src/stim/gates/gate_data_period_3.cc
 src/stim/gates/gate_data_period_4.cc
+src/stim/gates/gate_data_rotations.cc
 src/stim/gates/gate_data_pp.cc
 src/stim/gates/gate_data_swaps.cc
 src/stim/gates/gates.cc

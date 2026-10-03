@@ -269,6 +269,11 @@ struct Simplifier {
             case GateType::R:
                 yield({GateType::R, {}, ts, inst.tag});
                 break;
+            case GateType::ROTION_X:
+            case GateType::ROTION_Y:
+            case GateType::ROTION_Z:
+                yield(inst);
+                break;
 
             default:
                 throw std::invalid_argument("Unhandled in Simplifier::simplify_disjoint_1q_instruction: " + inst.str());
