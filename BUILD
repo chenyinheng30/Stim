@@ -1,6 +1,8 @@
 package(default_visibility = ["//visibility:public"])
 
-load("@rules_python//python:packaging.bzl", "py_wheel")
+load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library", "cc_test")
+load("@rules_shell//shell:sh_test.bzl", "sh_test")
+load("@aspect_rules_py//py:defs.bzl", "py_library", "py_wheel")
 
 SOURCE_FILES_NO_MAIN = glob(
     [
@@ -71,8 +73,9 @@ cc_binary(
     includes = ["src/"],
 )
 
-cc_test(
-    name = "stim_test",
+cc_binary(
+    name = "stim_test_bin",
+    testonly = 1,
     srcs = SOURCE_FILES_NO_MAIN + TEST_FILES,
     copts = [
         "-std=c++20",
@@ -83,6 +86,14 @@ cc_test(
     deps = [
         "@googletest//:gtest",
         "@googletest//:gtest_main",
+    ],
+)
+
+sh_test(
+    name = "stim_test",
+    srcs = ["stim_test_runner.sh"],
+    data = [
+        ":stim_test_bin",
     ],
 )
 
@@ -100,6 +111,12 @@ cc_binary(
     includes = ["src/"],
     linkshared = 1,
     deps = ["@pybind11//:pybind11"],
+)
+
+py_library(
+    name = "stim_python",
+    data = [":stim.so", ":stim.pyi"],
+    imports = ["."],
 )
 
 genrule(
