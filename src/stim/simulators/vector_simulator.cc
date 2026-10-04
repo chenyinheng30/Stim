@@ -77,6 +77,10 @@ void VectorSimulator::apply(GateType gate, size_t qubit) {
     } catch (const std::out_of_range &) {
         throw std::out_of_range(
             "Single qubit gate isn't supported by VectorSimulator: " + std::string(GATE_DATA[gate].name));
+    } catch (const std::invalid_argument &) {
+        throw std::invalid_argument(
+            "Single qubit gate requires parens arguments to be applied by VectorSimulator: " +
+            std::string(GATE_DATA[gate].name));
     }
 }
 
@@ -196,12 +200,12 @@ void VectorSimulator::do_unitary_circuit(const Circuit &circuit) {
     std::vector<size_t> targets2{1, 2};
     circuit.for_each_operation([&](const CircuitInstruction &op) {
         const auto &gate_data = GATE_DATA[op.gate_type];
-        if (!(gate_data.flags & GATE_IS_UNITARY)) {
+        if (!(gate_data.flags & GATE_IS_UNITARY) && !gate_data.has_parameterized_unitary()) {
             std::stringstream ss;
             ss << "Not a unitary gate: " << gate_data.name;
             throw std::invalid_argument(ss.str());
         }
-        auto unitary = gate_data.unitary();
+        auto unitary = gate_data.unitary(op.args);
         for (auto t : op.targets) {
             if (!t.is_qubit_target() || (size_t{1} << t.data) >= state.size()) {
                 std::stringstream ss;

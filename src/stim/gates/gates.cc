@@ -322,6 +322,47 @@ std::vector<std::vector<std::complex<float>>> Gate::unitary() const {
     return result;
 }
 
+bool Gate::has_parameterized_unitary() const {
+    switch (id) {
+        case GateType::ROTION_X:
+        case GateType::ROTION_Y:
+        case GateType::ROTION_Z:
+            return true;
+        default:
+            return false;
+    }
+}
+
+std::vector<std::vector<std::complex<float>>> Gate::unitary(SpanRef<const double> args) const {
+    if (!has_parameterized_unitary()) {
+        return unitary();
+    }
+    if (args.size() != 1) {
+        throw std::invalid_argument(
+            std::string(name) + " takes exactly 1 angle argument, but received " + std::to_string(args.size()));
+    }
+    auto theta = (float)args[0];
+    auto c = cosf(theta / 2);
+    auto s = sinf(theta / 2);
+    std::vector<std::vector<std::complex<float>>> result(2, std::vector<std::complex<float>>(2));
+    result[0][0] = {c, 0};
+    result[0][1] = {0, -s};
+    result[1][0] = {0, -s};
+    result[1][1] = {c, 0};
+    if (id == GateType::ROTION_Y) {
+        // exp(-i*theta*Y/2)
+        result[0][1] = {-s, 0};
+        result[1][0] = {s, 0};
+    } else if (id == GateType::ROTION_Z) {
+        // exp(-i*theta*Z/2)
+        result[0][0] = {c, -s};
+        result[1][1] = {c, s};
+        result[0][1] = {0, 0};
+        result[1][0] = {0, 0};
+    }
+    return result;
+}
+
 const Gate &Gate::inverse() const {
     if ((flags & GATE_IS_UNITARY) || id == GateType::TICK) {
         return GATE_DATA[best_candidate_inverse_id];

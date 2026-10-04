@@ -51,29 +51,46 @@ pybind11::object gate_tableau(const GateTypeWrapper &self_id) {
     }
     return pybind11::none();
 }
-pybind11::object gate_unitary_matrix(const GateTypeWrapper &self_id) {
-    const Gate &self = GATE_DATA.at(self_id.type);
-    if (self.has_known_unitary_matrix()) {
-        auto r = self.unitary();
-        auto n = r.size();
-        std::complex<float> *buffer = new std::complex<float>[n * n];
-        for (size_t a = 0; a < n; a++) {
-            for (size_t b = 0; b < n; b++) {
-                buffer[b + a * n] = r[a][b];
-            }
+namespace {
+pybind11::object flat_matrix_to_numpy(const std::vector<std::vector<std::complex<float>>> &r) {
+    auto n = r.size();
+    std::complex<float> *buffer = new std::complex<float>[n * n];
+    for (size_t a = 0; a < n; a++) {
+        for (size_t b = 0; b < n; b++) {
+            buffer[b + a * n] = r[a][b];
         }
-
-        pybind11::capsule free_when_done(buffer, [](void *f) {
-            delete[] reinterpret_cast<std::complex<float> *>(f);
-        });
-
-        return pybind11::array_t<std::complex<float>>(
-            {(pybind11::ssize_t)n, (pybind11::ssize_t)n},
-            {(pybind11::ssize_t)(n * sizeof(std::complex<float>)), (pybind11::ssize_t)sizeof(std::complex<float>)},
-            buffer,
-            free_when_done);
     }
-    return pybind11::none();
+
+    pybind11::capsule free_when_done(buffer, [](void *f) {
+        delete[] reinterpret_cast<std::complex<float> *>(f);
+    });
+
+    return pybind11::array_t<std::complex<float>>(
+        {(pybind11::ssize_t)n, (pybind11::ssize_t)n},
+        {(pybind11::ssize_t)(n * sizeof(std::complex<float>)), (pybind11::ssize_t)sizeof(std::complex<float>)},
+        buffer,
+        free_when_done);
+}
+}  // namespace
+
+pybind11::object gate_unitary_matrix(const GateTypeWrapper &self_id, const pybind11::object &args) {
+    const Gate &self = GATE_DATA.at(self_id.type);
+    std::vector<double> arg_vector;
+    if (!args.is_none()) {
+        arg_vector = pybind11::cast<std::vector<double>>(args);
+    }
+    if (self.has_parameterized_unitary() && !self.has_known_unitary_matrix()) {
+        // Parameterized gate: args select the matrix.
+        return flat_matrix_to_numpy(self.unitary(arg_vector));
+    }
+    if (!self.has_known_unitary_matrix()) {
+        return pybind11::none();
+    }
+    if (!arg_vector.empty()) {
+        throw pybind11::type_error(
+            std::string(self.name) + " takes no parens arguments; args must be empty.");
+    }
+    return flat_matrix_to_numpy(self.unitary());
 }
 
 pybind11::class_<GateTypeWrapper> stim_pybind::pybind_gate_data(pybind11::module &m) {
@@ -239,6 +256,8 @@ void stim_pybind::pybind_gate_data_methods(pybind11::module &m, pybind11::class_
                 ss << "    .tableau = " << v(gate_tableau(self_id)) << "\n";
                 ss << "    .unitary_matrix = np.array(" << v(pybind11::cast(self.unitary()))
                    << ", dtype=np.complex64)\n";
+            } else if (self.has_parameterized_unitary()) {
+                ss << "    .unitary_matrix = unitary_matrix(args)  # takes args\n";
             }
             ss << "}";
             return ss.str();
@@ -279,28 +298,38 @@ void stim_pybind::pybind_gate_data_methods(pybind11::module &m, pybind11::class_
         )DOC")
             .data());
 
-    c.def_property_readonly(
+    c.def(
         "unitary_matrix",
         &gate_unitary_matrix,
+        pybind11::arg("args") = pybind11::none(),
         clean_doc_string(R"DOC(
-            @signature def unitary_matrix(self) -> Optional[np.ndarray]:
+            @signature def unitary_matrix(self, args: Optional[List[float]] = None) -> Optional[np.ndarray]:
             Returns the gate's unitary matrix, or None if the gate isn't unitary.
+
+            For parameterized gates like ROTION_X, args must contain exactly one
+            angle, e.g. `stim.gate_data('ROTION_X').unitary_matrix([3.14159265])`
+            is -i*X (up to floating point error). Calling without args on a
+            parameterized gate raises ValueError.
 
             Examples:
                 >>> import stim
 
-                >>> print(stim.gate_data('M').unitary_matrix)
+                >>> print(stim.gate_data('M').unitary_matrix())
                 None
 
-                >>> stim.gate_data('X').unitary_matrix
+                >>> stim.gate_data('X').unitary_matrix()
                 array([[0.+0.j, 1.+0.j],
                        [1.+0.j, 0.+0.j]], dtype=complex64)
 
-                >>> stim.gate_data('ISWAP').unitary_matrix
+                >>> stim.gate_data('ISWAP').unitary_matrix()
                 array([[1.+0.j, 0.+0.j, 0.+0.j, 0.+0.j],
                        [0.+0.j, 0.+0.j, 0.+1.j, 0.+0.j],
                        [0.+0.j, 0.+1.j, 0.+0.j, 0.+0.j],
                        [0.+0.j, 0.+0.j, 0.+0.j, 1.+0.j]], dtype=complex64)
+
+                >>> stim.gate_data('ROTION_Z').unitary_matrix([0])
+                array([[1.-0.j, 0.+0.j],
+                       [0.+0.j, 1.+0.j]], dtype=complex64)
         )DOC")
             .data());
 

@@ -26,6 +26,7 @@
 #include <vector>
 
 #include "stim/mem/fixed_cap_vector.h"
+#include "stim/mem/span_ref.h"
 
 namespace stim {
 
@@ -313,6 +314,17 @@ struct Gate {
     }
 
     std::vector<std::vector<std::complex<float>>> unitary() const;
+
+    /// Returns the gate's unitary matrix for the given parens arguments.
+    ///
+    /// ROTION_X/Y/Z take exactly one angle argument (std::invalid_argument
+    /// otherwise). Other gates ignore the arguments. Throws std::out_of_range
+    /// for gates with no unitary matrix.
+    std::vector<std::vector<std::complex<float>>> unitary(
+        SpanRef<const double> args) const;
+
+    /// Returns whether the gate's unitary matrix depends on its parens arguments.
+    bool has_parameterized_unitary() const;
 
     bool is_symmetric() const;
     GateType hadamard_conjugated(bool ignoring_sign) const;
