@@ -3,12 +3,19 @@ module(
     version = "1.16.0",
 )
 
-bazel_dep(name = "googletest", version = "1.18.0")
-bazel_dep(name = "pybind11_bazel", version = "2.12.0")
+bazel_dep(name = "googletest", version = "1.18.0.bcr.1")
+bazel_dep(name = "pybind11_bazel", version = "3.0.1")
 
-bazel_dep(name = "rules_cc", version = "0.2.18")
-bazel_dep(name = "rules_shell", version = "0.6.1")
+bazel_dep(name = "rules_cc", version = "0.2.25")
 bazel_dep(name = "aspect_rules_py", version = "2.0.0-alpha.7")
+
+interpreters = use_extension(
+    "@aspect_rules_py//py:extensions.bzl",
+    "python_interpreters",
+)
+interpreters.toolchain(python_version = "3.14")
+use_repo(interpreters, "python_interpreters")
+register_toolchains("@python_interpreters//:all")
 
 pybind11 = use_extension(
     "@pybind11_bazel//:internal_configure.bzl",

@@ -1,1 +1,2 @@
 test --test_output=errors
+common --@aspect_rules_py//py:python_version=3.14

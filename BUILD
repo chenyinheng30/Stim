@@ -1,7 +1,6 @@
 package(default_visibility = ["//visibility:public"])
 
 load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library", "cc_test")
-load("@rules_shell//shell:sh_test.bzl", "sh_test")
 load("@aspect_rules_py//py:defs.bzl", "py_library", "py_wheel")
 
 SOURCE_FILES_NO_MAIN = glob(
@@ -73,9 +72,8 @@ cc_binary(
     includes = ["src/"],
 )
 
-cc_binary(
-    name = "stim_test_bin",
-    testonly = 1,
+cc_test(
+    name = "stim_test",
     srcs = SOURCE_FILES_NO_MAIN + TEST_FILES,
     copts = [
         "-std=c++20",
@@ -86,14 +84,7 @@ cc_binary(
     deps = [
         "@googletest//:gtest",
         "@googletest//:gtest_main",
-    ],
-)
-
-sh_test(
-    name = "stim_test",
-    srcs = ["stim_test_runner.sh"],
-    data = [
-        ":stim_test_bin",
+        "@rules_cc//cc/runfiles",
     ],
 )
 

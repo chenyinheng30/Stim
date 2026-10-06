@@ -1,7 +1,15 @@
 #include "stim/util_bot/test_util.test.h"
 
+#include <cstdlib>
 #include <filesystem>
 #include <fstream>
+#include <memory>
+
+#if defined(BAZEL_CURRENT_REPOSITORY)
+#include "rules_cc/cc/runfiles/runfiles.h"
+
+using rules_cc::cc::runfiles::Runfiles;
+#endif
 
 #include "stim/util_bot/probability_util.h"
 
@@ -11,27 +19,34 @@ static bool shared_test_rng_initialized;
 static std::mt19937_64 shared_test_rng;
 
 std::string resolve_test_file(std::string_view name) {
-    std::vector<std::string> prefixes{
-        "testdata/",
-        "../testdata/",
-    };
-    for (const auto &prefix : prefixes) {
-        std::string full_path = prefix + std::string(name);
-        FILE *f = fopen(full_path.c_str(), "rb");
-        if (f != nullptr) {
-            fclose(f);
-            return full_path;
-        }
+#if defined(BAZEL_CURRENT_REPOSITORY)
+    std::string error;
+    std::unique_ptr<Runfiles> runfiles(Runfiles::CreateForTest(BAZEL_CURRENT_REPOSITORY, &error));
+    if (runfiles == nullptr) {
+        throw std::runtime_error("Could not initialize runfiles: " + error);
     }
-    for (const auto &prefix : prefixes) {
-        std::string full_path = prefix + std::string(name);
-        FILE *f = fopen(full_path.c_str(), "wb");
-        if (f != nullptr) {
-            fclose(f);
-            return full_path;
-        }
+    std::string full_path = runfiles->Rlocation(std::string("stim/testdata/") + std::string(name));
+    if (full_path.empty()) {
+        throw std::invalid_argument("Could not find runfile 'testdata/" + std::string(name) + "'.");
     }
-    throw std::invalid_argument("Run tests from the repo root so they can find the testdata/ directory.");
+#else
+    const char *root = std::getenv("STIM_TEST_DATA_ROOT");
+    root = root != nullptr ? root : "testdata";
+    std::string full_path = root;
+    full_path.push_back('/');
+    full_path.append(name);
+#endif
+    FILE *f = fopen(full_path.c_str(), "rb");
+    if (f != nullptr) {
+        fclose(f);
+        return full_path;
+    }
+    f = fopen(full_path.c_str(), "wb");
+    if (f != nullptr) {
+        fclose(f);
+        return full_path;
+    }
+    throw std::invalid_argument("Failed to read or create test data file " + full_path);
 }
 
 void expect_string_is_identical_to_saved_file(std::string_view actual, std::string_view key) {
