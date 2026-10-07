@@ -52,7 +52,7 @@ TEST_EACH_WORD_SIZE_W(TableauSimulator, identity, {
 
 TEST_EACH_WORD_SIZE_W(TableauSimulator, rejects_syntax_only_rotation_gates, {
     TableauSimulator<W> sim(INDEPENDENT_TEST_RNG(), 1);
-    EXPECT_THROW(sim.safe_do_circuit(Circuit("ROTION_X(0.25) 0")), std::invalid_argument);
+    EXPECT_THROW(sim.safe_do_circuit(Circuit("ROTATION_X(0.25) 0")), std::invalid_argument);
 })
 
 TEST_EACH_WORD_SIZE_W(TableauSimulator, bit_flip, {

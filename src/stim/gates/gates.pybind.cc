@@ -272,7 +272,7 @@ void stim_pybind::pybind_gate_data_methods(pybind11::module &m, pybind11::class_
             @signature def tableau(self) -> Optional[stim.Tableau]:
             Returns the gate's tableau, or None if the gate has no tableau.
 
-            Parameterized rotation gates (ROTION_X/Y/Z) and pauli-product
+            Parameterized rotation gates (ROTATION_X/Y/Z) and pauli-product
             gates (such as SPP) have no tableau and return None.
 
             Examples:
@@ -281,7 +281,7 @@ void stim_pybind::pybind_gate_data_methods(pybind11::module &m, pybind11::class_
                 None
                 >>> print(stim.gate_data('SPP').tableau)
                 None
-                >>> print(stim.gate_data('ROTION_X').tableau)
+                >>> print(stim.gate_data('ROTATION_X').tableau)
                 None
                 >>> stim.gate_data('H').tableau
                 stim.Tableau.from_conjugated_generators(
@@ -314,8 +314,8 @@ void stim_pybind::pybind_gate_data_methods(pybind11::module &m, pybind11::class_
             @signature def unitary_matrix(self, args: Optional[List[float]] = None) -> Optional[np.ndarray]:
             Returns the gate's unitary matrix, or None if the gate isn't unitary.
 
-            For parameterized gates like ROTION_X, args must contain exactly one
-            angle, e.g. `stim.gate_data('ROTION_X').unitary_matrix([3.14159265])`
+            For parameterized gates like ROTATION_X, args must contain exactly one
+            angle, e.g. `stim.gate_data('ROTATION_X').unitary_matrix([3.14159265])`
             is -i*X (up to floating point error). Calling without args on a
             parameterized gate raises ValueError.
 
@@ -335,7 +335,7 @@ void stim_pybind::pybind_gate_data_methods(pybind11::module &m, pybind11::class_
                        [0.+0.j, 0.+1.j, 0.+0.j, 0.+0.j],
                        [0.+0.j, 0.+0.j, 0.+0.j, 1.+0.j]], dtype=complex64)
 
-                >>> stim.gate_data('ROTION_Z').unitary_matrix([0])
+                >>> stim.gate_data('ROTATION_Z').unitary_matrix([0])
                 array([[1.-0.j, 0.+0.j],
                        [0.+0.j, 1.+0.j]], dtype=complex64)
         )DOC")
@@ -350,7 +350,7 @@ void stim_pybind::pybind_gate_data_methods(pybind11::module &m, pybind11::class_
         clean_doc_string(R"DOC(
             Returns whether or not the gate is a unitary gate.
 
-            Parameterized rotation gates (ROTION_X/Y/Z) are unitary gates.
+            Parameterized rotation gates (ROTATION_X/Y/Z) are unitary gates.
 
             Examples:
                 >>> import stim
@@ -359,7 +359,7 @@ void stim_pybind::pybind_gate_data_methods(pybind11::module &m, pybind11::class_
                 True
                 >>> stim.gate_data('CX').is_unitary
                 True
-                >>> stim.gate_data('ROTION_X').is_unitary
+                >>> stim.gate_data('ROTATION_X').is_unitary
                 True
 
                 >>> stim.gate_data('R').is_unitary
@@ -844,7 +844,7 @@ void stim_pybind::pybind_gate_data_methods(pybind11::module &m, pybind11::class_
 
             should be equivalent to doing nothing at all.
 
-            For parameterized rotation gates ROTION_X/Y/Z, the inverse is the
+            For parameterized rotation gates ROTATION_X/Y/Z, the inverse is the
             same gate with the angle negated.
 
             Examples:
@@ -862,8 +862,8 @@ void stim_pybind::pybind_gate_data_methods(pybind11::module &m, pybind11::class_
                 >>> stim.gate_data('CXSWAP').inverse
                 stim.gate_data('SWAPCX')
 
-                >>> stim.gate_data('ROTION_X').inverse
-                stim.gate_data('ROTION_X')
+                >>> stim.gate_data('ROTATION_X').inverse
+                stim.gate_data('ROTATION_X')
 
                 >>> stim.gate_data('X_ERROR').inverse is None
                 True

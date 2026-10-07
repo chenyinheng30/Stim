@@ -269,9 +269,9 @@ struct Simplifier {
             case GateType::R:
                 yield({GateType::R, {}, ts, inst.tag});
                 break;
-            case GateType::ROTION_X:
-            case GateType::ROTION_Y:
-            case GateType::ROTION_Z:
+            case GateType::ROTATION_X:
+            case GateType::ROTATION_Y:
+            case GateType::ROTATION_Z:
                 yield(inst);
                 break;
 

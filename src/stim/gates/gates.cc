@@ -324,9 +324,9 @@ std::vector<std::vector<std::complex<float>>> Gate::unitary() const {
 
 bool Gate::has_parameterized_unitary() const {
     switch (id) {
-        case GateType::ROTION_X:
-        case GateType::ROTION_Y:
-        case GateType::ROTION_Z:
+        case GateType::ROTATION_X:
+        case GateType::ROTATION_Y:
+        case GateType::ROTATION_Z:
             return true;
         default:
             return false;
@@ -353,11 +353,11 @@ std::vector<std::vector<std::complex<float>>> Gate::unitary(SpanRef<const double
     result[0][1] = {0, -s};
     result[1][0] = {0, -s};
     result[1][1] = {c, 0};
-    if (id == GateType::ROTION_Y) {
+    if (id == GateType::ROTATION_Y) {
         // exp(-i*theta*Y/2)
         result[0][1] = {-s, 0};
         result[1][0] = {s, 0};
-    } else if (id == GateType::ROTION_Z) {
+    } else if (id == GateType::ROTATION_Z) {
         // exp(-i*theta*Z/2)
         result[0][0] = {c, -s};
         result[1][1] = {c, s};

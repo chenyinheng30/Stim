@@ -21,19 +21,19 @@
 using namespace stim;
 
 TEST(circuit, syntax_only_rotation_gates) {
-    Circuit circuit("ROTION_X(0.25) 0 1\nROTION_Y(-1.5) 2\nROTION_Z(3e-2) 3");
+    Circuit circuit("ROTATION_X(0.25) 0 1\nROTATION_Y(-1.5) 2\nROTATION_Z(3e-2) 3");
 
     ASSERT_EQ(circuit.operations.size(), 3);
-    EXPECT_EQ(GATE_DATA[circuit.operations[0].gate_type].name, "ROTION_X");
+    EXPECT_EQ(GATE_DATA[circuit.operations[0].gate_type].name, "ROTATION_X");
     EXPECT_EQ(circuit.operations[0].args[0], 0.25);
     EXPECT_EQ(circuit.operations[0].targets.size(), 2);
     EXPECT_EQ(circuit.operations[1].args[0], -1.5);
     EXPECT_EQ(circuit.operations[2].args[0], 0.03);
     EXPECT_EQ(Circuit(circuit.str()), circuit);
 
-    EXPECT_THROW({ Circuit("ROTION_X 0"); }, std::invalid_argument);
-    EXPECT_THROW({ Circuit("ROTION_Y(0.1, 0.2) 0"); }, std::invalid_argument);
-    EXPECT_THROW({ Circuit("ROTION_Z(0.1) rec[-1]"); }, std::invalid_argument);
+    EXPECT_THROW({ Circuit("ROTATION_X 0"); }, std::invalid_argument);
+    EXPECT_THROW({ Circuit("ROTATION_Y(0.1, 0.2) 0"); }, std::invalid_argument);
+    EXPECT_THROW({ Circuit("ROTATION_Z(0.1) rec[-1]"); }, std::invalid_argument);
 }
 
 TEST(circuit, from_text) {
@@ -1860,7 +1860,7 @@ TEST(circuit, generate_test_circuit_with_all_operations) {
     for (const auto &instruction : c.operations) {
         seen.insert(instruction.gate_type);
     }
-    constexpr GateType syntax_only_gates[] = {GateType::ROTION_X, GateType::ROTION_Y, GateType::ROTION_Z};
+    constexpr GateType syntax_only_gates[] = {GateType::ROTATION_X, GateType::ROTATION_Y, GateType::ROTATION_Z};
     ASSERT_EQ(seen.size() + std::size(syntax_only_gates), NUM_DEFINED_GATES);
 }
 

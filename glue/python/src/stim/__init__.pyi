@@ -8354,7 +8354,7 @@ class GateData:
 
         should be equivalent to doing nothing at all.
 
-        For parameterized rotation gates ROTION_X/Y/Z, the inverse is the
+        For parameterized rotation gates ROTATION_X/Y/Z, the inverse is the
         same gate with the angle negated.
 
         Examples:
@@ -8372,8 +8372,8 @@ class GateData:
             >>> stim.gate_data('CXSWAP').inverse
             stim.gate_data('SWAPCX')
 
-            >>> stim.gate_data('ROTION_X').inverse
-            stim.gate_data('ROTION_X')
+            >>> stim.gate_data('ROTATION_X').inverse
+            stim.gate_data('ROTATION_X')
 
             >>> stim.gate_data('X_ERROR').inverse is None
             True
@@ -8587,7 +8587,7 @@ class GateData:
     ) -> bool:
         """Returns whether or not the gate is a unitary gate.
 
-        Parameterized rotation gates (ROTION_X/Y/Z) are unitary gates.
+        Parameterized rotation gates (ROTATION_X/Y/Z) are unitary gates.
 
         Examples:
             >>> import stim
@@ -8596,7 +8596,7 @@ class GateData:
             True
             >>> stim.gate_data('CX').is_unitary
             True
-            >>> stim.gate_data('ROTION_X').is_unitary
+            >>> stim.gate_data('ROTATION_X').is_unitary
             True
 
             >>> stim.gate_data('R').is_unitary
@@ -8694,7 +8694,7 @@ class GateData:
     ) -> Optional[stim.Tableau]:
         """Returns the gate's tableau, or None if the gate has no tableau.
 
-        Parameterized rotation gates (ROTION_X/Y/Z) and pauli-product
+        Parameterized rotation gates (ROTATION_X/Y/Z) and pauli-product
         gates (such as SPP) have no tableau and return None.
 
         Examples:
@@ -8703,7 +8703,7 @@ class GateData:
             None
             >>> print(stim.gate_data('SPP').tableau)
             None
-            >>> print(stim.gate_data('ROTION_X').tableau)
+            >>> print(stim.gate_data('ROTATION_X').tableau)
             None
             >>> stim.gate_data('H').tableau
             stim.Tableau.from_conjugated_generators(
@@ -8802,8 +8802,8 @@ class GateData:
     ) -> Optional[np.ndarray]:
         """Returns the gate's unitary matrix, or None if the gate isn't unitary.
 
-        For parameterized gates like ROTION_X, args must contain exactly one
-        angle, e.g. `stim.gate_data('ROTION_X').unitary_matrix([3.14159265])`
+        For parameterized gates like ROTATION_X, args must contain exactly one
+        angle, e.g. `stim.gate_data('ROTATION_X').unitary_matrix([3.14159265])`
         is -i*X (up to floating point error). Calling without args on a
         parameterized gate raises ValueError.
 
@@ -8823,7 +8823,7 @@ class GateData:
                    [0.+0.j, 0.+1.j, 0.+0.j, 0.+0.j],
                    [0.+0.j, 0.+0.j, 0.+0.j, 1.+0.j]], dtype=complex64)
 
-            >>> stim.gate_data('ROTION_Z').unitary_matrix([0])
+            >>> stim.gate_data('ROTATION_Z').unitary_matrix([0])
             array([[1.-0.j, 0.+0.j],
                    [0.+0.j, 1.+0.j]], dtype=complex64)
         """

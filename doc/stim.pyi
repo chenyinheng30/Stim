@@ -8785,8 +8785,8 @@ class GateData:
     ) -> Optional[np.ndarray]:
         """Returns the gate's unitary matrix, or None if the gate isn't unitary.
 
-        For parameterized gates like ROTION_X, args must contain exactly one
-        angle, e.g. `stim.gate_data('ROTION_X').unitary_matrix([3.14159265])`
+        For parameterized gates like ROTATION_X, args must contain exactly one
+        angle, e.g. `stim.gate_data('ROTATION_X').unitary_matrix([3.14159265])`
         is -i*X (up to floating point error). Calling without args on a
         parameterized gate raises ValueError.
 
@@ -8806,7 +8806,7 @@ class GateData:
                    [0.+0.j, 0.+1.j, 0.+0.j, 0.+0.j],
                    [0.+0.j, 0.+0.j, 0.+0.j, 1.+0.j]], dtype=complex64)
 
-            >>> stim.gate_data('ROTION_Z').unitary_matrix([0])
+            >>> stim.gate_data('ROTATION_Z').unitary_matrix([0])
             array([[1.-0.j, 0.+0.j],
                    [0.+0.j, 1.+0.j]], dtype=complex64)
         """

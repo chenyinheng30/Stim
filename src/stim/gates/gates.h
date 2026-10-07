@@ -189,9 +189,9 @@ enum class GateType : uint8_t {
     MYY,
     MZZ,
     // Syntax-only parameterized rotation gates
-    ROTION_X,
-    ROTION_Y,
-    ROTION_Z,
+    ROTATION_X,
+    ROTATION_Y,
+    ROTATION_Z,
 };
 
 enum GateFlags : uint16_t {
@@ -317,7 +317,7 @@ struct Gate {
 
     /// Returns the gate's unitary matrix for the given parens arguments.
     ///
-    /// ROTION_X/Y/Z take exactly one angle argument (std::invalid_argument
+    /// ROTATION_X/Y/Z take exactly one angle argument (std::invalid_argument
     /// otherwise). Other gates ignore the arguments. Throws std::out_of_range
     /// for gates with no unitary matrix.
     std::vector<std::vector<std::complex<float>>> unitary(

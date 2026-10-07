@@ -58,9 +58,9 @@
     - [ZCY](#ZCY)
     - [ZCZ](#ZCZ)
 - Parameterized Rotation Gates (syntax only)
-    - [ROTION_X](#ROTION_X)
-    - [ROTION_Y](#ROTION_Y)
-    - [ROTION_Z](#ROTION_Z)
+    - [ROTATION_X](#ROTATION_X)
+    - [ROTATION_Y](#ROTATION_Y)
+    - [ROTATION_Z](#ROTATION_Z)
 - Noise Channels
     - [CORRELATED_ERROR](#CORRELATED_ERROR)
     - [DEPOLARIZE1](#DEPOLARIZE1)
@@ -5041,8 +5041,8 @@ Example:
     # Empty time step.
     TICK
 
-<a name="ROTION_X"></a>
-### The 'ROTION_X' Instruction
+<a name="ROTATION_X"></a>
+### The 'ROTATION_X' Instruction
 
 Represents a parameterized rotation about the X axis in a circuit.
 
@@ -5059,10 +5059,10 @@ Targets:
 
 Example:
 
-    ROTION_X(0.25) 0
+    ROTATION_X(0.25) 0
 
-<a name="ROTION_Y"></a>
-### The 'ROTION_Y' Instruction
+<a name="ROTATION_Y"></a>
+### The 'ROTATION_Y' Instruction
 
 Represents a parameterized rotation about the Y axis in a circuit.
 
@@ -5079,10 +5079,10 @@ Targets:
 
 Example:
 
-    ROTION_Y(0.25) 0
+    ROTATION_Y(0.25) 0
 
-<a name="ROTION_Z"></a>
-### The 'ROTION_Z' Instruction
+<a name="ROTATION_Z"></a>
+### The 'ROTATION_Z' Instruction
 
 Represents a parameterized rotation about the Z axis in a circuit.
 
@@ -5099,5 +5099,5 @@ Targets:
 
 Example:
 
-    ROTION_Z(0.25) 0
+    ROTATION_Z(0.25) 0
 

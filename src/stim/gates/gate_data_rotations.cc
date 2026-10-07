@@ -20,10 +20,10 @@ void GateDataMap::add_gate_data_rotations(bool &failed) {
     add_gate(
         failed,
         Gate{
-            .name = "ROTION_X",
-            .id = GateType::ROTION_X,
-            // Self-inverse as a gate type: ROTION_X(t)^-1 = ROTION_X(-t).
-            .best_candidate_inverse_id = GateType::ROTION_X,
+            .name = "ROTATION_X",
+            .id = GateType::ROTATION_X,
+            // Self-inverse as a gate type: ROTATION_X(t)^-1 = ROTATION_X(-t).
+            .best_candidate_inverse_id = GateType::ROTATION_X,
             .arg_count = 1,
             .flags = GATE_IS_SINGLE_QUBIT_GATE,
             .category = "C_Parameterized Rotation Gates",
@@ -41,10 +41,10 @@ This instruction is retained in parsed circuits but cannot be simulated by Stim.
     add_gate(
         failed,
         Gate{
-            .name = "ROTION_Y",
-            .id = GateType::ROTION_Y,
-            // Self-inverse as a gate type: ROTION_Y(t)^-1 = ROTION_Y(-t).
-            .best_candidate_inverse_id = GateType::ROTION_Y,
+            .name = "ROTATION_Y",
+            .id = GateType::ROTATION_Y,
+            // Self-inverse as a gate type: ROTATION_Y(t)^-1 = ROTATION_Y(-t).
+            .best_candidate_inverse_id = GateType::ROTATION_Y,
             .arg_count = 1,
             .flags = GATE_IS_SINGLE_QUBIT_GATE,
             .category = "C_Parameterized Rotation Gates",
@@ -62,10 +62,10 @@ This instruction is retained in parsed circuits but cannot be simulated by Stim.
     add_gate(
         failed,
         Gate{
-            .name = "ROTION_Z",
-            .id = GateType::ROTION_Z,
-            // Self-inverse as a gate type: ROTION_Z(t)^-1 = ROTION_Z(-t).
-            .best_candidate_inverse_id = GateType::ROTION_Z,
+            .name = "ROTATION_Z",
+            .id = GateType::ROTATION_Z,
+            // Self-inverse as a gate type: ROTATION_Z(t)^-1 = ROTATION_Z(-t).
+            .best_candidate_inverse_id = GateType::ROTATION_Z,
             .arg_count = 1,
             .flags = GATE_IS_SINGLE_QUBIT_GATE,
             .category = "C_Parameterized Rotation Gates",
