@@ -113,11 +113,19 @@ def test_takes_measurement_record_targets():
 def test_gate_data_inverse():
     for v in stim.gate_data().values():
         assert v.is_unitary == (v.inverse is not None)
-        matrix = v.unitary_matrix
+        try:
+            matrix = v.unitary_matrix()
+        except ValueError:
+            matrix = v.unitary_matrix([0.25])
         if matrix is not None:
             assert v.is_unitary
-            assert np.allclose(matrix.conj().T, v.inverse.unitary_matrix, atol=1e-6), (v.name, v.inverse.name)
-            assert v.inverse == v.generalized_inverse
+            inv = v.inverse
+            try:
+                inv_matrix = inv.unitary_matrix()
+            except ValueError:
+                inv_matrix = inv.unitary_matrix([-0.25])
+            assert np.allclose(matrix.conj().T, inv_matrix, atol=1e-6), (v.name, inv.name)
+            assert inv == v.generalized_inverse
 
     assert stim.gate_data('H').inverse == stim.gate_data('H')
     assert stim.gate_data('S').inverse == stim.gate_data('S_DAG')

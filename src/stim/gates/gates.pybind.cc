@@ -46,7 +46,8 @@ std::vector<std::string_view> gate_aliases(const GateTypeWrapper &self_id) {
 
 pybind11::object gate_tableau(const GateTypeWrapper &self_id) {
     const auto &self = GATE_DATA.at(self_id.type);
-    if (self.flags & GATE_IS_UNITARY) {
+    // Only single-qubit and two-qubit gates have a tableau.
+    if (self.flags & GATE_IS_UNITARY && (self.flow_data.size() == 2 || self.flow_data.size() == 4)) {
         return pybind11::cast(self.tableau<MAX_BITWORD_WIDTH>());
     }
     return pybind11::none();
@@ -246,7 +247,7 @@ void stim_pybind::pybind_gate_data_methods(pybind11::module &m, pybind11::class_
             ss << "    .is_reset = " << b(self.flags & GATE_IS_RESET) << "\n";
             ss << "    .is_single_qubit_gate = " << b(self.flags & GATE_IS_SINGLE_QUBIT_GATE) << "\n";
             ss << "    .is_two_qubit_gate = " << b(self.flags & GATE_TARGETS_PAIRS) << "\n";
-            ss << "    .is_unitary = " << b(self.flags & GATE_IS_UNITARY) << "\n";
+            ss << "    .is_unitary = " << b(self.is_unitary_operation()) << "\n";
             ss << "    .num_parens_arguments_range = " << v(gate_num_parens_argument_range(self_id)) << "\n";
             ss << "    .produces_measurements = " << b(self.flags & GATE_PRODUCES_RESULTS) << "\n";
             ss << "    .takes_measurement_record_targets = "
@@ -271,9 +272,16 @@ void stim_pybind::pybind_gate_data_methods(pybind11::module &m, pybind11::class_
             @signature def tableau(self) -> Optional[stim.Tableau]:
             Returns the gate's tableau, or None if the gate has no tableau.
 
+            Parameterized rotation gates (ROTION_X/Y/Z) and pauli-product
+            gates (such as SPP) have no tableau and return None.
+
             Examples:
                 >>> import stim
                 >>> print(stim.gate_data('M').tableau)
+                None
+                >>> print(stim.gate_data('SPP').tableau)
+                None
+                >>> print(stim.gate_data('ROTION_X').tableau)
                 None
                 >>> stim.gate_data('H').tableau
                 stim.Tableau.from_conjugated_generators(
@@ -337,10 +345,12 @@ void stim_pybind::pybind_gate_data_methods(pybind11::module &m, pybind11::class_
         "is_unitary",
         [](const GateTypeWrapper &self_id) -> bool {
             const Gate &self = GATE_DATA.at(self_id.type);
-            return self.flags & GATE_IS_UNITARY;
+            return self.is_unitary_operation();
         },
         clean_doc_string(R"DOC(
             Returns whether or not the gate is a unitary gate.
+
+            Parameterized rotation gates (ROTION_X/Y/Z) are unitary gates.
 
             Examples:
                 >>> import stim
@@ -348,6 +358,8 @@ void stim_pybind::pybind_gate_data_methods(pybind11::module &m, pybind11::class_
                 >>> stim.gate_data('H').is_unitary
                 True
                 >>> stim.gate_data('CX').is_unitary
+                True
+                >>> stim.gate_data('ROTION_X').is_unitary
                 True
 
                 >>> stim.gate_data('R').is_unitary
@@ -815,7 +827,7 @@ void stim_pybind::pybind_gate_data_methods(pybind11::module &m, pybind11::class_
         "inverse",
         [](const GateTypeWrapper &self_id) -> pybind11::object {
             const Gate &self = GATE_DATA.at(self_id.type);
-            if (self.flags & GATE_IS_UNITARY) {
+            if (self.is_unitary_operation()) {
                 return pybind11::cast(GateTypeWrapper{self.best_candidate_inverse_id});
             }
             return pybind11::none();
@@ -832,6 +844,9 @@ void stim_pybind::pybind_gate_data_methods(pybind11::module &m, pybind11::class_
 
             should be equivalent to doing nothing at all.
 
+            For parameterized rotation gates ROTION_X/Y/Z, the inverse is the
+            same gate with the angle negated.
+
             Examples:
                 >>> import stim
 
@@ -846,6 +861,9 @@ void stim_pybind::pybind_gate_data_methods(pybind11::module &m, pybind11::class_
 
                 >>> stim.gate_data('CXSWAP').inverse
                 stim.gate_data('SWAPCX')
+
+                >>> stim.gate_data('ROTION_X').inverse
+                stim.gate_data('ROTION_X')
 
                 >>> stim.gate_data('X_ERROR').inverse is None
                 True

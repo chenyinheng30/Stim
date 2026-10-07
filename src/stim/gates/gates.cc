@@ -333,6 +333,10 @@ bool Gate::has_parameterized_unitary() const {
     }
 }
 
+bool Gate::is_unitary_operation() const {
+    return (flags & GATE_IS_UNITARY) || has_parameterized_unitary();
+}
+
 std::vector<std::vector<std::complex<float>>> Gate::unitary(SpanRef<const double> args) const {
     if (!has_parameterized_unitary()) {
         return unitary();
@@ -364,7 +368,7 @@ std::vector<std::vector<std::complex<float>>> Gate::unitary(SpanRef<const double
 }
 
 const Gate &Gate::inverse() const {
-    if ((flags & GATE_IS_UNITARY) || id == GateType::TICK) {
+    if (is_unitary_operation() || id == GateType::TICK) {
         return GATE_DATA[best_candidate_inverse_id];
     }
     throw std::out_of_range(std::string(name) + " has no inverse.");

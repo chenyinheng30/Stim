@@ -326,6 +326,9 @@ struct Gate {
     /// Returns whether the gate's unitary matrix depends on its parens arguments.
     bool has_parameterized_unitary() const;
 
+    /// Returns whether the gate implements a unitary operation.
+    bool is_unitary_operation() const;
+
     bool is_symmetric() const;
     GateType hadamard_conjugated(bool ignoring_sign) const;
 

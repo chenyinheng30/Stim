@@ -99,7 +99,7 @@ def all_cliffords_string_from_gate_data():
     c = stim.CliffordString(24)
     r = 0
     for g in stim.gate_data().values():
-        if g.is_unitary and g.is_single_qubit_gate:
+        if g.is_single_qubit_gate and g.tableau is not None:
             c[r] = g
             r += 1
     return c

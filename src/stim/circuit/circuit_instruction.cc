@@ -14,6 +14,8 @@
 
 #include "stim/circuit/circuit_instruction.h"
 
+#include <charconv>
+
 #include "stim/circuit/circuit.h"
 #include "stim/circuit/gate_target.h"
 #include "stim/gates/gates.h"
@@ -348,7 +350,10 @@ std::ostream &stim::operator<<(std::ostream &out, const CircuitInstruction &inst
             if (e > (double)INT64_MIN && e < (double)INT64_MAX && (int64_t)e == e) {
                 out << (int64_t)e;
             } else {
-                out << e;
+                // Print the shortest decimal text that round-trips exactly.
+                char buffer[64];
+                auto result = std::to_chars(buffer, buffer + sizeof(buffer), e);
+                out.write(buffer, result.ptr - buffer);
             }
         }
         out << ')';

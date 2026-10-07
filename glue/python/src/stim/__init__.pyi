@@ -8354,6 +8354,9 @@ class GateData:
 
         should be equivalent to doing nothing at all.
 
+        For parameterized rotation gates ROTION_X/Y/Z, the inverse is the
+        same gate with the angle negated.
+
         Examples:
             >>> import stim
 
@@ -8368,6 +8371,9 @@ class GateData:
 
             >>> stim.gate_data('CXSWAP').inverse
             stim.gate_data('SWAPCX')
+
+            >>> stim.gate_data('ROTION_X').inverse
+            stim.gate_data('ROTION_X')
 
             >>> stim.gate_data('X_ERROR').inverse is None
             True
@@ -8581,12 +8587,16 @@ class GateData:
     ) -> bool:
         """Returns whether or not the gate is a unitary gate.
 
+        Parameterized rotation gates (ROTION_X/Y/Z) are unitary gates.
+
         Examples:
             >>> import stim
 
             >>> stim.gate_data('H').is_unitary
             True
             >>> stim.gate_data('CX').is_unitary
+            True
+            >>> stim.gate_data('ROTION_X').is_unitary
             True
 
             >>> stim.gate_data('R').is_unitary
@@ -8684,9 +8694,16 @@ class GateData:
     ) -> Optional[stim.Tableau]:
         """Returns the gate's tableau, or None if the gate has no tableau.
 
+        Parameterized rotation gates (ROTION_X/Y/Z) and pauli-product
+        gates (such as SPP) have no tableau and return None.
+
         Examples:
             >>> import stim
             >>> print(stim.gate_data('M').tableau)
+            None
+            >>> print(stim.gate_data('SPP').tableau)
+            None
+            >>> print(stim.gate_data('ROTION_X').tableau)
             None
             >>> stim.gate_data('H').tableau
             stim.Tableau.from_conjugated_generators(

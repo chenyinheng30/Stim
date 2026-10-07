@@ -22,7 +22,8 @@ void GateDataMap::add_gate_data_rotations(bool &failed) {
         Gate{
             .name = "ROTION_X",
             .id = GateType::ROTION_X,
-            .best_candidate_inverse_id = GateType::NOT_A_GATE,
+            // Self-inverse as a gate type: ROTION_X(t)^-1 = ROTION_X(-t).
+            .best_candidate_inverse_id = GateType::ROTION_X,
             .arg_count = 1,
             .flags = GATE_IS_SINGLE_QUBIT_GATE,
             .category = "C_Parameterized Rotation Gates",
@@ -42,7 +43,8 @@ This instruction is retained in parsed circuits but cannot be simulated by Stim.
         Gate{
             .name = "ROTION_Y",
             .id = GateType::ROTION_Y,
-            .best_candidate_inverse_id = GateType::NOT_A_GATE,
+            // Self-inverse as a gate type: ROTION_Y(t)^-1 = ROTION_Y(-t).
+            .best_candidate_inverse_id = GateType::ROTION_Y,
             .arg_count = 1,
             .flags = GATE_IS_SINGLE_QUBIT_GATE,
             .category = "C_Parameterized Rotation Gates",
@@ -62,7 +64,8 @@ This instruction is retained in parsed circuits but cannot be simulated by Stim.
         Gate{
             .name = "ROTION_Z",
             .id = GateType::ROTION_Z,
-            .best_candidate_inverse_id = GateType::NOT_A_GATE,
+            // Self-inverse as a gate type: ROTION_Z(t)^-1 = ROTION_Z(-t).
+            .best_candidate_inverse_id = GateType::ROTION_Z,
             .arg_count = 1,
             .flags = GATE_IS_SINGLE_QUBIT_GATE,
             .category = "C_Parameterized Rotation Gates",
