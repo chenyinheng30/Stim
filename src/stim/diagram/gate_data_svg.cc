@@ -95,5 +95,10 @@ std::map<std::string_view, SvgGateData> SvgGateData::make_gate_data_map() {
     result.insert({"HERALDED_ERASE", {1, "HErase", "", "", "#800000", "white", 8, 10}});
     result.insert({"HERALDED_PAULI_CHANNEL_1", {4, "HERALDED_PAULI_CHANNEL_1", "", "", "#800000", "white", 14, 10}});
 
+    // Drawn as unitary "R" boxes (white fill), with the angle in red below via end_args.
+    result.insert({"ROTION_X", {1, "R", "X", "", "white", "black", 26, 16, 0}});
+    result.insert({"ROTION_Y", {1, "R", "Y", "", "white", "black", 26, 16, 0}});
+    result.insert({"ROTION_Z", {1, "R", "Z", "", "white", "black", 26, 16, 0}});
+
     return result;
 }
