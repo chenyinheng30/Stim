@@ -10607,9 +10607,8 @@ class Tableau:
             | ++
             | YZ
         """
+    @staticmethod
     def from_numpy(
-        self,
-        *,
         x2x: np.ndarray,
         x2z: np.ndarray,
         z2x: np.ndarray,

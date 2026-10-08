@@ -538,7 +538,7 @@ void stim_pybind::pybind_tableau_methods(pybind11::module &m, pybind11::class_<T
         pybind11::arg("x_signs") = pybind11::none(),
         pybind11::arg("z_signs") = pybind11::none(),
         clean_doc_string(R"DOC(
-            @signature def from_numpy(self, *, x2x: np.ndarray, x2z: np.ndarray, z2x: np.ndarray, z2z: np.ndarray, x_signs: Optional[np.ndarray] = None, z_signs: Optional[np.ndarray] = None) -> stim.Tableau:
+            @signature def from_numpy(*, x2x: np.ndarray, x2z: np.ndarray, z2x: np.ndarray, z2z: np.ndarray, x_signs: Optional[np.ndarray] = None, z_signs: Optional[np.ndarray] = None) -> stim.Tableau:
 
             Creates a tableau from numpy arrays x2x, x2z, z2x, z2z, x_signs, and z_signs.
 
