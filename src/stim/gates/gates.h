@@ -256,7 +256,7 @@ struct Gate {
     /// Prose summary of what the gate is, how it fits into Stim, and how to use it.
     std::string_view help;
     /// A unitary matrix describing the gate. (Size 0 if the gate is not unitary.)
-    FixedCapVector<FixedCapVector<std::complex<float>, 4>, 4> unitary_data;
+    FixedCapVector<FixedCapVector<std::complex<double>, 4>, 4> unitary_data;
     /// A shorthand description of the stabilizer flows of the gate.
     /// For single qubit Cliffords, this should be the output stabilizers for X then Z.
     /// For 2 qubit Cliffords, this should be the output stabilizers for X_, Z_, _X, _Z.
@@ -313,14 +313,14 @@ struct Gate {
         return out;
     }
 
-    std::vector<std::vector<std::complex<float>>> unitary() const;
+    std::vector<std::vector<std::complex<double>>> unitary() const;
 
     /// Returns the gate's unitary matrix for the given parens arguments.
     ///
     /// ROTATION_X/Y/Z take exactly one angle argument (std::invalid_argument
     /// otherwise). Other gates ignore the arguments. Throws std::out_of_range
     /// for gates with no unitary matrix.
-    std::vector<std::vector<std::complex<float>>> unitary(
+    std::vector<std::vector<std::complex<double>>> unitary(
         SpanRef<const double> args) const;
 
     /// Returns whether the gate's unitary matrix depends on its parens arguments.

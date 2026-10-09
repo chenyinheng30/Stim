@@ -187,8 +187,8 @@ TEST_EACH_WORD_SIZE_W(gate_data, stabilizer_flows_are_also_correct_for_decompose
     }
 })
 
-std::array<std::complex<float>, 4> canonicalize_global_phase(std::array<std::complex<float>, 4> v) {
-    for (std::complex<float> pivot : v) {
+std::array<std::complex<double>, 4> canonicalize_global_phase(std::array<std::complex<double>, 4> v) {
+    for (std::complex<double> pivot : v) {
         if (std::abs(pivot) > 1e-5) {
             for (auto &t : v) {
                 t /= pivot;
@@ -200,7 +200,7 @@ std::array<std::complex<float>, 4> canonicalize_global_phase(std::array<std::com
 }
 
 void expect_unitaries_close_up_global_phase(
-    const Gate &g, std::array<std::complex<float>, 4> u1, std::array<std::complex<float>, 4> u2) {
+    const Gate &g, std::array<std::complex<double>, 4> u1, std::array<std::complex<double>, 4> u2) {
     u1 = canonicalize_global_phase(u1);
     u2 = canonicalize_global_phase(u2);
     for (size_t k = 0; k < 4; k++) {
@@ -217,19 +217,19 @@ void expect_unitaries_close_up_global_phase(
     EXPECT_TRUE(true);
 }
 
-std::array<std::complex<float>, 4> reconstruct_unitary_from_euler_angles(const Gate &g) {
+std::array<std::complex<double>, 4> reconstruct_unitary_from_euler_angles(const Gate &g) {
     auto xyz = g.to_euler_angles();
-    auto c = cosf(xyz[0] / 2);
-    auto s = sinf(xyz[0] / 2);
+    auto c = cos(xyz[0] / 2);
+    auto s = sin(xyz[0] / 2);
     return {
         c,
-        -s * std::exp(std::complex<float>{0, xyz[2]}),
-        s * std::exp(std::complex<float>{0, xyz[1]}),
-        c * std::exp(std::complex<float>{0, xyz[1] + xyz[2]}),
+        -s * std::exp(std::complex<double>{0, xyz[2]}),
+        s * std::exp(std::complex<double>{0, xyz[1]}),
+        c * std::exp(std::complex<double>{0, xyz[1] + xyz[2]}),
     };
 }
 
-std::array<std::complex<float>, 4> reconstruct_unitary_from_data(Gate g) {
+std::array<std::complex<double>, 4> reconstruct_unitary_from_data(Gate g) {
     return {
         g.unitary_data[0][0],
         g.unitary_data[0][1],
@@ -238,7 +238,7 @@ std::array<std::complex<float>, 4> reconstruct_unitary_from_data(Gate g) {
     };
 }
 
-std::array<std::complex<float>, 4> reconstruct_unitary_from_axis_angle(const Gate &g) {
+std::array<std::complex<double>, 4> reconstruct_unitary_from_axis_angle(const Gate &g) {
     auto xyz_a = g.to_axis_angle();
     auto x = xyz_a[0];
     auto y = xyz_a[1];
@@ -247,14 +247,14 @@ std::array<std::complex<float>, 4> reconstruct_unitary_from_axis_angle(const Gat
     auto c = cosf(a / 2);
     auto s = -sinf(a / 2);
     return {
-        std::complex<float>{c, s * z},
-        std::complex<float>{s * y, s * x},
-        std::complex<float>{-s * y, s * x},
-        std::complex<float>{c, -s * z},
+        std::complex<double>{c, s * z},
+        std::complex<double>{s * y, s * x},
+        std::complex<double>{-s * y, s * x},
+        std::complex<double>{c, -s * z},
     };
 }
 
-std::array<std::complex<float>, 4> reconstruct_unitary_from_euler_angles_via_vector_sim_for_axis_reference(
+std::array<std::complex<double>, 4> reconstruct_unitary_from_euler_angles_via_vector_sim_for_axis_reference(
     const Gate &g) {
     auto xyz = g.to_euler_angles();
     std::array<int, 3> half_turns;
@@ -275,7 +275,12 @@ std::array<std::complex<float>, 4> reconstruct_unitary_from_euler_angles_via_vec
     VectorSimulator v(2);
     v.do_unitary_circuit(c);
 
-    return {v.state[0], v.state[1], v.state[2], v.state[3]};
+    return {
+        std::complex<double>(v.state[0].real(), v.state[0].imag()),
+        std::complex<double>(v.state[1].real(), v.state[1].imag()),
+        std::complex<double>(v.state[2].real(), v.state[2].imag()),
+        std::complex<double>(v.state[3].real(), v.state[3].imag()),
+    };
 }
 
 TEST(gate_data, to_euler_angles) {

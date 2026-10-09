@@ -53,9 +53,9 @@ pybind11::object gate_tableau(const GateTypeWrapper &self_id) {
     return pybind11::none();
 }
 namespace {
-pybind11::object flat_matrix_to_numpy(const std::vector<std::vector<std::complex<float>>> &r) {
+pybind11::object flat_matrix_to_numpy(const std::vector<std::vector<std::complex<double>>> &r) {
     auto n = r.size();
-    std::complex<float> *buffer = new std::complex<float>[n * n];
+    std::complex<double> *buffer = new std::complex<double>[n * n];
     for (size_t a = 0; a < n; a++) {
         for (size_t b = 0; b < n; b++) {
             buffer[b + a * n] = r[a][b];
@@ -63,12 +63,12 @@ pybind11::object flat_matrix_to_numpy(const std::vector<std::vector<std::complex
     }
 
     pybind11::capsule free_when_done(buffer, [](void *f) {
-        delete[] reinterpret_cast<std::complex<float> *>(f);
+        delete[] reinterpret_cast<std::complex<double> *>(f);
     });
 
-    return pybind11::array_t<std::complex<float>>(
+    return pybind11::array_t<std::complex<double>>(
         {(pybind11::ssize_t)n, (pybind11::ssize_t)n},
-        {(pybind11::ssize_t)(n * sizeof(std::complex<float>)), (pybind11::ssize_t)sizeof(std::complex<float>)},
+        {(pybind11::ssize_t)(n * sizeof(std::complex<double>)), (pybind11::ssize_t)sizeof(std::complex<double>)},
         buffer,
         free_when_done);
 }
@@ -256,7 +256,7 @@ void stim_pybind::pybind_gate_data_methods(pybind11::module &m, pybind11::class_
             if (self.flags & GATE_IS_UNITARY) {
                 ss << "    .tableau = " << v(gate_tableau(self_id)) << "\n";
                 ss << "    .unitary_matrix = np.array(" << v(pybind11::cast(self.unitary()))
-                   << ", dtype=np.complex64)\n";
+                   << ", dtype=np.complex128)\n";
             } else if (self.has_parameterized_unitary()) {
                 ss << "    .unitary_matrix = unitary_matrix(args)  # takes args\n";
             }
@@ -327,17 +327,17 @@ void stim_pybind::pybind_gate_data_methods(pybind11::module &m, pybind11::class_
 
                 >>> stim.gate_data('X').unitary_matrix()
                 array([[0.+0.j, 1.+0.j],
-                       [1.+0.j, 0.+0.j]], dtype=complex64)
+                       [1.+0.j, 0.+0.j]])
 
                 >>> stim.gate_data('ISWAP').unitary_matrix()
                 array([[1.+0.j, 0.+0.j, 0.+0.j, 0.+0.j],
                        [0.+0.j, 0.+0.j, 0.+1.j, 0.+0.j],
                        [0.+0.j, 0.+1.j, 0.+0.j, 0.+0.j],
-                       [0.+0.j, 0.+0.j, 0.+0.j, 1.+0.j]], dtype=complex64)
+                       [0.+0.j, 0.+0.j, 0.+0.j, 1.+0.j]])
 
                 >>> stim.gate_data('ROTATION_Z').unitary_matrix([0])
                 array([[1.-0.j, 0.+0.j],
-                       [0.+0.j, 1.+0.j]], dtype=complex64)
+                       [0.+0.j, 1.+0.j]])
         )DOC")
             .data());
 

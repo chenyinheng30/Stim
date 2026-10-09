@@ -82,7 +82,7 @@ struct VectorSimulator {
     }
 
     /// Applies a unitary operation to the given qubits, updating the state vector.
-    void apply(const std::vector<std::vector<std::complex<float>>> &matrix, const std::vector<size_t> &qubits);
+    void apply(const std::vector<std::vector<std::complex<double>>> &matrix, const std::vector<size_t> &qubits);
 
     /// Helper method for applying named single qubit gates.
     void apply(GateType gate, size_t qubit);

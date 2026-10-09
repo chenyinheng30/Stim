@@ -16,7 +16,7 @@
 
 using namespace stim;
 
-static constexpr std::complex<float> i = std::complex<float>(0, 1);
+static constexpr std::complex<double> i = std::complex<double>(0, 1);
 
 void GateDataMap::add_gate_data_period_3(bool &failed) {
     add_gate(
@@ -39,7 +39,7 @@ Targets:
 
     Qubits to operate on.
 )MARKDOWN",
-            .unitary_data = {{0.5f - i * 0.5f, -0.5f - 0.5f * i}, {0.5f - 0.5f * i, 0.5f + 0.5f * i}},
+            .unitary_data = {{0.5 - i * 0.5, -0.5 - 0.5 * i}, {0.5 - 0.5 * i, 0.5 + 0.5 * i}},
             .flow_data = {"+Y", "+X"},
             .h_s_cx_m_r_decomposition = R"CIRCUIT(
 S 0
@@ -69,7 +69,7 @@ Targets:
 
     Qubits to operate on.
 )MARKDOWN",
-            .unitary_data = {{0.5f + i * 0.5f, 0.5f - 0.5f * i}, {-0.5f - 0.5f * i, 0.5f - 0.5f * i}},
+            .unitary_data = {{0.5 + i * 0.5, 0.5 - 0.5 * i}, {-0.5 - 0.5 * i, 0.5 - 0.5 * i}},
             .flow_data = {"-Y", "-X"},
             .h_s_cx_m_r_decomposition = R"CIRCUIT(
 S 0
@@ -101,7 +101,7 @@ Targets:
 
     Qubits to operate on.
 )MARKDOWN",
-            .unitary_data = {{0.5f + i * 0.5f, -0.5f + 0.5f * i}, {0.5f + 0.5f * i, 0.5f - 0.5f * i}},
+            .unitary_data = {{0.5 + i * 0.5, -0.5 + 0.5 * i}, {0.5 + 0.5 * i, 0.5 - 0.5 * i}},
             .flow_data = {"-Y", "+X"},
             .h_s_cx_m_r_decomposition = R"CIRCUIT(
 S 0
@@ -129,7 +129,7 @@ Targets:
 
     Qubits to operate on.
 )MARKDOWN",
-            .unitary_data = {{0.5f - i * 0.5f, 0.5f + 0.5f * i}, {-0.5f + 0.5f * i, 0.5f + 0.5f * i}},
+            .unitary_data = {{0.5 - i * 0.5, 0.5 + 0.5 * i}, {-0.5 + 0.5 * i, 0.5 + 0.5 * i}},
             .flow_data = {"+Y", "-X"},
             .h_s_cx_m_r_decomposition = R"CIRCUIT(
 S 0
@@ -159,7 +159,7 @@ Targets:
 
     Qubits to operate on.
 )MARKDOWN",
-            .unitary_data = {{0.5f + i * 0.5f, 0.5f + 0.5f * i}, {-0.5f + 0.5f * i, 0.5f - 0.5f * i}},
+            .unitary_data = {{0.5 + i * 0.5, 0.5 + 0.5 * i}, {-0.5 + 0.5 * i, 0.5 - 0.5 * i}},
             .flow_data = {"+Z", "+Y"},
             .h_s_cx_m_r_decomposition = R"CIRCUIT(
 H 0
@@ -187,7 +187,7 @@ Targets:
 
     Qubits to operate on.
 )MARKDOWN",
-            .unitary_data = {{0.5f - i * 0.5f, -0.5f + 0.5f * i}, {0.5f + 0.5f * i, 0.5f + 0.5f * i}},
+            .unitary_data = {{0.5 - i * 0.5, -0.5 + 0.5 * i}, {0.5 + 0.5 * i, 0.5 + 0.5 * i}},
             .flow_data = {"-Z", "+Y"},
             .h_s_cx_m_r_decomposition = R"CIRCUIT(
 S 0
@@ -217,7 +217,7 @@ Targets:
 
     Qubits to operate on.
 )MARKDOWN",
-            .unitary_data = {{0.5f - i * 0.5f, 0.5f - 0.5f * i}, {-0.5f - 0.5f * i, 0.5f + 0.5f * i}},
+            .unitary_data = {{0.5 - i * 0.5, 0.5 - 0.5 * i}, {-0.5 - 0.5 * i, 0.5 + 0.5 * i}},
             .flow_data = {"+Z", "-Y"},
             .h_s_cx_m_r_decomposition = R"CIRCUIT(
 H 0
@@ -247,7 +247,7 @@ Targets:
 
     Qubits to operate on.
 )MARKDOWN",
-            .unitary_data = {{0.5f + i * 0.5f, -0.5f + -0.5f * i}, {0.5f - 0.5f * i, 0.5f - 0.5f * i}},
+            .unitary_data = {{0.5 + i * 0.5, -0.5 + -0.5 * i}, {0.5 - 0.5 * i, 0.5 - 0.5 * i}},
             .flow_data = {"-Z", "-Y"},
             .h_s_cx_m_r_decomposition = R"CIRCUIT(
 S 0

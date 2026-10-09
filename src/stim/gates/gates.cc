@@ -225,18 +225,22 @@ std::array<float, 3> Gate::to_euler_angles() const {
     auto c = unitary_data[1][0];
     auto d = unitary_data[1][1];
     std::array<float, 3> xyz;
-    if (a == std::complex<float>{0}) {
+    // Note: arg(z / w) is computed as arg(z * conj(w)). Mathematically the same
+    // angle, and bit-identical to the complex-division formula, but the signed
+    // zeros of complex division depend on the compiler's division lowering
+    // (e.g. __divdc3 at -O0), which flips arg at the +/-pi branch cut.
+    if (a == std::complex<double>{0}) {
         xyz[0] = 3.14159265359f;
         xyz[1] = 0;
-        xyz[2] = arg(-b / c);
-    } else if (b == std::complex<float>{0}) {
+        xyz[2] = arg(-b * std::conj(c));
+    } else if (b == std::complex<double>{0}) {
         xyz[0] = 0;
         xyz[1] = 0;
-        xyz[2] = arg(d / a);
+        xyz[2] = arg(d * std::conj(a));
     } else {
         xyz[0] = 3.14159265359f / 2;
-        xyz[1] = arg(c / a);
-        xyz[2] = arg(-b / a);
+        xyz[1] = arg(c * std::conj(a));
+        xyz[2] = arg(-b * std::conj(a));
     }
     return xyz;
 }
@@ -249,7 +253,7 @@ std::array<float, 4> Gate::to_axis_angle() const {
     auto b = unitary_data[0][1];
     auto c = unitary_data[1][0];
     auto d = unitary_data[1][1];
-    auto i = std::complex<float>{0, 1};
+    auto i = std::complex<double>{0, 1};
     auto x = b + c;
     auto y = b * i + c * -i;
     auto z = a - d;
@@ -270,10 +274,13 @@ std::array<float, 4> Gate::to_axis_angle() const {
     }
     p /= sqrt(p.imag() * p.imag() + p.real() * p.real());
     p *= 2;
-    x /= p;
-    y /= p;
-    z /= p;
-    s /= p;
+    // Multiply by conj(p)/|p|^2 instead of dividing: bit-identical values, but
+    // IEEE-deterministic signed zeros (complex division's zero signs are not).
+    auto pn = p.real() * p.real() + p.imag() * p.imag();
+    x = x * std::conj(p) / pn;
+    y = y * std::conj(p) / pn;
+    z = z * std::conj(p) / pn;
+    s = s * std::conj(p) / pn;
     assert(x.imag() == 0);
     assert(y.imag() == 0);
     assert(z.imag() == 0);
@@ -299,7 +306,7 @@ std::array<float, 4> Gate::to_axis_angle() const {
         rs = -rs;
     }
 
-    return {rx, ry, rz, acosf(rs) * 2};
+    return {(float)rx, (float)ry, (float)rz, (float)(acos(rs) * 2)};
 }
 
 bool Gate::has_known_unitary_matrix() const {
@@ -307,11 +314,11 @@ bool Gate::has_known_unitary_matrix() const {
            (flags & (GateFlags::GATE_IS_SINGLE_QUBIT_GATE | GateFlags::GATE_TARGETS_PAIRS));
 }
 
-std::vector<std::vector<std::complex<float>>> Gate::unitary() const {
+std::vector<std::vector<std::complex<double>>> Gate::unitary() const {
     if (unitary_data.size() != 2 && unitary_data.size() != 4) {
         throw std::out_of_range(std::string(name) + " doesn't have 1q or 2q unitary data.");
     }
-    std::vector<std::vector<std::complex<float>>> result;
+    std::vector<std::vector<std::complex<double>>> result;
     for (size_t k = 0; k < unitary_data.size(); k++) {
         const auto &d = unitary_data[k];
         result.emplace_back();
@@ -337,7 +344,7 @@ bool Gate::is_unitary_operation() const {
     return (flags & GATE_IS_UNITARY) || has_parameterized_unitary();
 }
 
-std::vector<std::vector<std::complex<float>>> Gate::unitary(SpanRef<const double> args) const {
+std::vector<std::vector<std::complex<double>>> Gate::unitary(SpanRef<const double> args) const {
     if (!has_parameterized_unitary()) {
         return unitary();
     }
@@ -345,10 +352,10 @@ std::vector<std::vector<std::complex<float>>> Gate::unitary(SpanRef<const double
         throw std::invalid_argument(
             std::string(name) + " takes exactly 1 angle argument, but received " + std::to_string(args.size()));
     }
-    auto theta = (float)args[0];
-    auto c = cosf(theta / 2);
-    auto s = sinf(theta / 2);
-    std::vector<std::vector<std::complex<float>>> result(2, std::vector<std::complex<float>>(2));
+    auto theta = args[0];
+    auto c = cos(theta / 2);
+    auto s = sin(theta / 2);
+    std::vector<std::vector<std::complex<double>>> result(2, std::vector<std::complex<double>>(2));
     result[0][0] = {c, 0};
     result[0][1] = {0, -s};
     result[1][0] = {0, -s};

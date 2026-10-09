@@ -11,7 +11,7 @@ using namespace stim;
 TEST_EACH_WORD_SIZE_W(conversions, unitary_to_tableau_vs_gate_data, {
     for (const auto &gate : GATE_DATA.items) {
         if (gate.has_known_unitary_matrix()) {
-            EXPECT_EQ(unitary_to_tableau<W>(gate.unitary(), true), gate.tableau<W>()) << gate.name;
+            EXPECT_EQ(unitary_to_tableau<W>(to_float32_matrix(gate.unitary()), true), gate.tableau<W>()) << gate.name;
         }
     }
 })
@@ -22,7 +22,7 @@ TEST_EACH_WORD_SIZE_W(conversions, tableau_to_unitary_vs_gate_data, {
     for (const auto &gate : GATE_DATA.items) {
         if (gate.has_known_unitary_matrix()) {
             auto actual = tableau_to_unitary<W>(gate.tableau<W>(), true);
-            auto expected = gate.unitary();
+            auto expected = to_float32_matrix(gate.unitary());
             v1.state.clear();
             for (const auto &row : actual) {
                 v1.state.insert(v1.state.end(), row.begin(), row.end());
@@ -43,15 +43,15 @@ TEST_EACH_WORD_SIZE_W(conversions, tableau_to_unitary_vs_gate_data, {
 })
 
 TEST_EACH_WORD_SIZE_W(conversions, unitary_vs_tableau_basic, {
-    ASSERT_EQ(unitary_to_tableau<W>(GATE_DATA.at("XCZ").unitary(), false), GATE_DATA.at("ZCX").tableau<W>());
-    ASSERT_EQ(unitary_to_tableau<W>(GATE_DATA.at("XCZ").unitary(), true), GATE_DATA.at("XCZ").tableau<W>());
-    ASSERT_EQ(unitary_to_tableau<W>(GATE_DATA.at("ZCX").unitary(), false), GATE_DATA.at("XCZ").tableau<W>());
-    ASSERT_EQ(unitary_to_tableau<W>(GATE_DATA.at("ZCX").unitary(), true), GATE_DATA.at("ZCX").tableau<W>());
+    ASSERT_EQ(unitary_to_tableau<W>(to_float32_matrix(GATE_DATA.at("XCZ").unitary()), false), GATE_DATA.at("ZCX").tableau<W>());
+    ASSERT_EQ(unitary_to_tableau<W>(to_float32_matrix(GATE_DATA.at("XCZ").unitary()), true), GATE_DATA.at("XCZ").tableau<W>());
+    ASSERT_EQ(unitary_to_tableau<W>(to_float32_matrix(GATE_DATA.at("ZCX").unitary()), false), GATE_DATA.at("XCZ").tableau<W>());
+    ASSERT_EQ(unitary_to_tableau<W>(to_float32_matrix(GATE_DATA.at("ZCX").unitary()), true), GATE_DATA.at("ZCX").tableau<W>());
 
-    ASSERT_EQ(unitary_to_tableau<W>(GATE_DATA.at("XCY").unitary(), false), GATE_DATA.at("YCX").tableau<W>());
-    ASSERT_EQ(unitary_to_tableau<W>(GATE_DATA.at("XCY").unitary(), true), GATE_DATA.at("XCY").tableau<W>());
-    ASSERT_EQ(unitary_to_tableau<W>(GATE_DATA.at("YCX").unitary(), false), GATE_DATA.at("XCY").tableau<W>());
-    ASSERT_EQ(unitary_to_tableau<W>(GATE_DATA.at("YCX").unitary(), true), GATE_DATA.at("YCX").tableau<W>());
+    ASSERT_EQ(unitary_to_tableau<W>(to_float32_matrix(GATE_DATA.at("XCY").unitary()), false), GATE_DATA.at("YCX").tableau<W>());
+    ASSERT_EQ(unitary_to_tableau<W>(to_float32_matrix(GATE_DATA.at("XCY").unitary()), true), GATE_DATA.at("XCY").tableau<W>());
+    ASSERT_EQ(unitary_to_tableau<W>(to_float32_matrix(GATE_DATA.at("YCX").unitary()), false), GATE_DATA.at("XCY").tableau<W>());
+    ASSERT_EQ(unitary_to_tableau<W>(to_float32_matrix(GATE_DATA.at("YCX").unitary()), true), GATE_DATA.at("YCX").tableau<W>());
 })
 
 TEST_EACH_WORD_SIZE_W(conversions, unitary_to_tableau_fuzz_vs_tableau_to_unitary, {

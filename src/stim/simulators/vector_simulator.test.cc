@@ -19,6 +19,7 @@
 #include "stim/gates/gates.h"
 #include "stim/mem/simd_word.test.h"
 #include "stim/stabilizers/pauli_string.h"
+#include "stim/util_bot/test_util.test.h"
 
 using namespace stim;
 
@@ -62,7 +63,7 @@ TEST(vector_sim, state_channel_duality_cnot) {
     sim.apply(GateType::CX, 0, 2);
     sim.apply(GateType::CX, 1, 3);
     sim.apply(GateType::CX, 2, 3);
-    auto u = GATE_DATA.at("ZCX").unitary();
+    auto u = to_float32_matrix(GATE_DATA.at("ZCX").unitary());
     for (size_t row = 0; row < 4; row++) {
         for (size_t col = 0; col < 4; col++) {
             ASSERT_NEAR_C(sim.state[row * 4 + col], u[row][col] * 0.5f);
@@ -75,7 +76,7 @@ TEST(vector_sim, state_channel_duality_y) {
     sim.apply(GateType::H, 0);
     sim.apply(GateType::CX, 0, 1);
     sim.apply(GateType::Y, 1);
-    auto u = GATE_DATA.at("Y").unitary();
+    auto u = to_float32_matrix(GATE_DATA.at("Y").unitary());
     for (size_t row = 0; row < 2; row++) {
         for (size_t col = 0; col < 2; col++) {
             ASSERT_NEAR_C(sim.state[row * 2 + col], u[row][col] * sqrtf(0.5f));

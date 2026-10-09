@@ -16,8 +16,8 @@
 
 using namespace stim;
 
-static constexpr std::complex<float> i = std::complex<float>(0, 1);
-static constexpr std::complex<float> s = 0.7071067811865475244f;
+static constexpr std::complex<double> i = std::complex<double>(0, 1);
+static constexpr std::complex<double> s = 0.7071067811865475244;
 
 void GateDataMap::add_gate_data_hada(bool &failed) {
     add_gate(

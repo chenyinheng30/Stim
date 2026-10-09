@@ -17,13 +17,29 @@
 #ifndef _STIM_TEST_UTIL_TEST_H
 #define _STIM_TEST_UTIL_TEST_H
 
+#include <complex>
 #include <random>
+#include <vector>
 
 #include "gtest/gtest.h"
 
 std::mt19937_64 INDEPENDENT_TEST_RNG();
 
 std::string rewind_read_close(FILE *f);
+
+// GateData unitaries are float64, but float32 pipelines (VectorSimulator state,
+// tableau flat unitaries) narrow explicitly at their boundary.
+inline std::vector<std::vector<std::complex<float>>> to_float32_matrix(
+    const std::vector<std::vector<std::complex<double>>> &matrix) {
+    std::vector<std::vector<std::complex<float>>> out;
+    for (const auto &row : matrix) {
+        out.emplace_back();
+        for (const auto &v : row) {
+            out.back().emplace_back((float)v.real(), (float)v.imag());
+        }
+    }
+    return out;
+}
 
 std::string resolve_test_file(std::string_view name);
 void expect_string_is_identical_to_saved_file(std::string_view actual, std::string_view key);

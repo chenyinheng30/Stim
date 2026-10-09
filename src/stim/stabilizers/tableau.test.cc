@@ -26,9 +26,11 @@
 
 using namespace stim;
 
-static float complex_distance(std::complex<float> a, std::complex<float> b) {
-    auto d = a - b;
-    return sqrtf(d.real() * d.real() + d.imag() * d.imag());
+template <typename S, typename T>
+static double complex_distance(std::complex<S> a, std::complex<T> b) {
+    auto dr = (double)a.real() - b.real();
+    auto di = (double)a.imag() - b.imag();
+    return sqrt(dr * dr + di * di);
 }
 
 TEST_EACH_WORD_SIZE_W(tableau, identity, {
@@ -52,7 +54,7 @@ TEST_EACH_WORD_SIZE_W(tableau, gate1, {
 
 template <size_t W>
 bool tableau_agrees_with_unitary(
-    const Tableau<W> &tableau, const std::vector<std::vector<std::complex<float>>> &unitary) {
+    const Tableau<W> &tableau, const std::vector<std::vector<std::complex<double>>> &unitary) {
     auto n = tableau.num_qubits;
     assert(unitary.size() == 1ULL << n);
 
@@ -88,7 +90,7 @@ bool tableau_agrees_with_unitary(
 
         // Verify that the state encodes the unitary matrix, with the
         // input-side and output-side observables having perfectly cancelled out.
-        auto scale = powf(0.5f, 0.5f * n);
+        auto scale = pow(0.5, 0.5 * n);
         for (size_t row = 0; row < 1u << n; row++) {
             for (size_t col = 0; col < 1u << n; col++) {
                 auto a = sim.state[(row << n) | col];
@@ -1179,7 +1181,7 @@ TEST_EACH_WORD_SIZE_W(tableau, unitary_vs_gate_data, {
     for (const auto &gate : GATE_DATA.items) {
         if (gate.has_known_unitary_matrix()) {
             std::vector<std::complex<float>> flat_expected;
-            for (const auto &row : gate.unitary()) {
+            for (const auto &row : to_float32_matrix(gate.unitary())) {
                 flat_expected.insert(flat_expected.end(), row.begin(), row.end());
             }
             VectorSimulator v(0);

@@ -27,11 +27,11 @@ VectorSimulator::VectorSimulator(size_t num_qubits) {
     state[0] = 1;
 }
 
-inline std::vector<std::complex<float>> mat_vec_mul(
-    const std::vector<std::vector<std::complex<float>>> &matrix, const std::vector<std::complex<float>> &vec) {
-    std::vector<std::complex<float>> result;
+inline std::vector<std::complex<double>> mat_vec_mul(
+    const std::vector<std::vector<std::complex<double>>> &matrix, const std::vector<std::complex<double>> &vec) {
+    std::vector<std::complex<double>> result;
     for (size_t row = 0; row < vec.size(); row++) {
-        std::complex<float> v = 0;
+        std::complex<double> v = 0;
         for (size_t col = 0; col < vec.size(); col++) {
             v += matrix[row][col] * vec[col];
         }
@@ -41,7 +41,7 @@ inline std::vector<std::complex<float>> mat_vec_mul(
 }
 
 void VectorSimulator::apply(
-    const std::vector<std::vector<std::complex<float>>> &matrix, const std::vector<size_t> &qubits) {
+    const std::vector<std::vector<std::complex<double>>> &matrix, const std::vector<size_t> &qubits) {
     size_t n = size_t{1} << qubits.size();
     assert(matrix.size() == n);
     std::vector<size_t> masks;
@@ -59,14 +59,14 @@ void VectorSimulator::apply(
         if (base & masks.back()) {
             continue;
         }
-        std::vector<std::complex<float>> in;
+        std::vector<std::complex<double>> in;
         in.reserve(masks.size());
         for (auto m : masks) {
-            in.push_back(state[base | m]);
+            in.emplace_back(state[base | m].real(), state[base | m].imag());
         }
         auto out = mat_vec_mul(matrix, in);
         for (size_t k = 0; k < masks.size(); k++) {
-            state[base | masks[k]] = out[k];
+            state[base | masks[k]] = std::complex<float>((float)out[k].real(), (float)out[k].imag());
         }
     }
 }
