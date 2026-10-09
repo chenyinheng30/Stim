@@ -8798,17 +8798,17 @@ class GateData:
 
             >>> stim.gate_data('X').unitary_matrix()
             array([[0.+0.j, 1.+0.j],
-                   [1.+0.j, 0.+0.j]], dtype=complex64)
+                   [1.+0.j, 0.+0.j]])
 
             >>> stim.gate_data('ISWAP').unitary_matrix()
             array([[1.+0.j, 0.+0.j, 0.+0.j, 0.+0.j],
                    [0.+0.j, 0.+0.j, 0.+1.j, 0.+0.j],
                    [0.+0.j, 0.+1.j, 0.+0.j, 0.+0.j],
-                   [0.+0.j, 0.+0.j, 0.+0.j, 1.+0.j]], dtype=complex64)
+                   [0.+0.j, 0.+0.j, 0.+0.j, 1.+0.j]])
 
             >>> stim.gate_data('ROTATION_Z').unitary_matrix([0])
             array([[1.-0.j, 0.+0.j],
-                   [0.+0.j, 1.+0.j]], dtype=complex64)
+                   [0.+0.j, 1.+0.j]])
         """
 class GateTarget:
     """Represents a gate target, like `0` or `rec[-1]`, from a circuit.
