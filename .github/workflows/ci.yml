@@ -399,7 +399,7 @@ jobs:
         with:
           python-version: '3.13'
       - run: bazel build :stim_dev_wheel
-      - run: pip install bazel-bin/stim-0.0.dev0-py3-none-any.whl
+      - run: pip install bazel-bin/stim-*.whl
       - run: diff <(python dev/gen_stim_api_reference.py -dev) doc/python_api_reference_vDev.md
       - run: diff <(python dev/gen_stim_stub_file.py -dev) glue/python/src/stim/__init__.pyi
       - run: diff <(python dev/gen_stim_stub_file.py -dev) doc/stim.pyi
@@ -435,7 +435,7 @@ jobs:
           repository-cache: true
           bazelisk-version: 1.x
       - run: bazel build :stim_dev_wheel
-      - run: pip install bazel-bin/stim-0.0.dev0-py3-none-any.whl
+      - run: pip install bazel-bin/stim-*.whl
       - run: pip install pytest
       - run: pytest src
       - run: dev/doctest_proper.py --module stim
@@ -451,7 +451,7 @@ jobs:
           repository-cache: true
           bazelisk-version: 1.x
       - run: bazel build :stim_dev_wheel
-      - run: pip install bazel-bin/stim-0.0.dev0-py3-none-any.whl
+      - run: pip install bazel-bin/stim-*.whl
       - run: pip install -e glue/cirq
       - run: pip install pytest
       - run: pytest glue/cirq
@@ -468,7 +468,7 @@ jobs:
           repository-cache: true
           bazelisk-version: 1.x
       - run: bazel build :stim_dev_wheel
-      - run: pip install bazel-bin/stim-0.0.dev0-py3-none-any.whl
+      - run: pip install bazel-bin/stim-*.whl
       - run: pip install -e glue/stimflow
       - run: pip install pytest
       - run: pytest glue/stimflow
@@ -485,7 +485,7 @@ jobs:
           repository-cache: true
           bazelisk-version: 1.x
       - run: bazel build :stim_dev_wheel
-      - run: pip install bazel-bin/stim-0.0.dev0-py3-none-any.whl
+      - run: pip install bazel-bin/stim-*.whl
       - run: pip install -e glue/sample
       - run: pip install pytest pymatching fusion-blossom~=0.1.4 mwpf~=0.1.5
       - run: pytest glue/sample
@@ -503,7 +503,7 @@ jobs:
           repository-cache: true
           bazelisk-version: 1.x
       - run: bazel build :stim_dev_wheel
-      - run: pip install bazel-bin/stim-0.0.dev0-py3-none-any.whl
+      - run: pip install bazel-bin/stim-*.whl
       - run: pip install -e glue/zx
       - run: pip install pytest
       - run: pytest glue/zx

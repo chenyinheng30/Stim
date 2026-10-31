@@ -1,6 +1,6 @@
 module(
     name = "stim",
-    version = "1.16.0",
+    version = "1.16.1",
 )
 
 bazel_dep(name = "googletest", version = "1.18.0.bcr.1")

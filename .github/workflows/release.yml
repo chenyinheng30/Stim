@@ -1,0 +1,55 @@
+name: release
+
+on:
+  push:
+    tags: ["stim-v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  wheel:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install bazelisk
+        run: |
+          curl -fsSL -o "$RUNNER_TEMP/bazelisk" \
+            https://github.com/bazelbuild/bazelisk/releases/latest/download/bazelisk-linux-amd64
+          chmod +x "$RUNNER_TEMP/bazelisk"
+          echo "$RUNNER_TEMP" >> "$GITHUB_PATH"
+
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/bazel
+          key: bazel-${{ runner.os }}-${{ hashFiles('MODULE.bazel.lock', '.bazelversion') }}
+          restore-keys: bazel-${{ runner.os }}-
+
+      - name: Build wheel
+        run: bazel build //:stim_dev_wheel
+
+      - name: Verify tag matches wheel version
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          wheel=$(ls "$(bazel info bazel-bin)"/stim-*.whl)
+          version=$(basename "$wheel" | sed -E 's/^stim-(.*)-py3-none-any\.whl$/\1/')
+          expected="${GITHUB_REF_NAME#stim-v}"
+          if [[ "$version" != "$expected" ]]; then
+            echo "tag $GITHUB_REF_NAME does not match wheel version $version" >&2
+            exit 1
+          fi
+          echo "wheel version $version matches tag"
+
+      - name: Collect
+        run: |
+          mkdir -p out
+          cp "$(bazel info bazel-bin)/"*.whl out/
+          ls -l out
+
+      - uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: out/*
+          generate_release_notes: true
