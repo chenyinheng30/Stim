@@ -97,7 +97,7 @@ cc_binary(
         "-fvisibility=hidden",
         "-march=x86-64-v3",
         "-DSTIM_PYBIND11_MODULE_NAME=stim",
-        "-DVERSION_INFO=1.16.1",
+        "-DVERSION_INFO=1.16.2",
     ],
     includes = ["src/"],
     linkshared = 1,
@@ -121,7 +121,7 @@ py_wheel(
     name = "stim_dev_wheel",
     distribution = "stim",
     requires = ["numpy"],
-    version = "1.16.1",
+    version = "1.16.2",
     deps = [
         ":stim.so",
         ":stim_wheel_files",
