@@ -36,6 +36,30 @@ TEST(circuit, syntax_only_rotation_gates) {
     EXPECT_THROW({ Circuit("ROTATION_Z(0.1) rec[-1]"); }, std::invalid_argument);
 }
 
+TEST(circuit, tag_axis_rotation_gate) {
+    Circuit circuit("ROTATION[XY](0.25) 0 1 2 3\nROTATION[XYZ](0.5) 4 5 6\nROTATION[Z](1) 7");
+
+    ASSERT_EQ(circuit.operations.size(), 3);
+    EXPECT_EQ(GATE_DATA[circuit.operations[0].gate_type].name, "ROTATION");
+    EXPECT_EQ(circuit.operations[0].tag, "XY");
+    EXPECT_EQ(circuit.operations[0].args[0], 0.25);
+    EXPECT_EQ(circuit.operations[0].targets.size(), 4);
+    EXPECT_EQ(circuit.operations[1].tag, "XYZ");
+    EXPECT_EQ(circuit.operations[1].targets.size(), 3);
+    EXPECT_EQ(circuit.operations[2].targets.size(), 1);
+    EXPECT_EQ(
+        circuit.str(),
+        "ROTATION[XY](0.25) 0 1 2 3\nROTATION[XYZ](0.5) 4 5 6\nROTATION[Z](1) 7");
+    EXPECT_EQ(Circuit(circuit.str()), circuit);
+
+    // The number of targets must be a multiple of the number of axis letters.
+    EXPECT_THROW({ Circuit("ROTATION[XYZ](0.5) 0 1"); }, std::invalid_argument);
+    // The axis letters are required.
+    EXPECT_THROW({ Circuit("ROTATION(0.5) 0"); }, std::invalid_argument);
+    // Only I, X, Y, and Z are Pauli axes.
+    EXPECT_THROW({ Circuit("ROTATION[QW](0.5) 0 1"); }, std::invalid_argument);
+}
+
 TEST(circuit, from_text) {
     Circuit expected;
     const auto &f = [](const char *c) {
@@ -1860,7 +1884,8 @@ TEST(circuit, generate_test_circuit_with_all_operations) {
     for (const auto &instruction : c.operations) {
         seen.insert(instruction.gate_type);
     }
-    constexpr GateType syntax_only_gates[] = {GateType::ROTATION_X, GateType::ROTATION_Y, GateType::ROTATION_Z};
+    constexpr GateType syntax_only_gates[] = {
+        GateType::ROTATION_X, GateType::ROTATION_Y, GateType::ROTATION_Z, GateType::ROTATION};
     ASSERT_EQ(seen.size() + std::size(syntax_only_gates), NUM_DEFINED_GATES);
 }
 

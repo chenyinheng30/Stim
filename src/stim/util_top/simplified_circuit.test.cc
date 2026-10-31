@@ -26,7 +26,14 @@ bool is_simplification_correct(const Gate &gate) {
     }
 
     Circuit original;
-    original.safe_append(CircuitInstruction(gate.id, args, gate_decomposition_help_targets_for_gate_type(gate.id), ""));
+    if (gate.id == GateType::ROTATION) {
+        // The axis letters live in the tag, so give this gate a real axis and matching targets.
+        std::vector<GateTarget> targets{GateTarget::qubit(0), GateTarget::qubit(1), GateTarget::qubit(2)};
+        original.safe_append(CircuitInstruction(gate.id, args, targets, "XYZ"));
+    } else {
+        original.safe_append(
+            CircuitInstruction(gate.id, args, gate_decomposition_help_targets_for_gate_type(gate.id), ""));
+    }
     Circuit simplified = simplified_circuit(original);
 
     if (gate.h_s_cx_m_r_decomposition == nullptr) {

@@ -89,7 +89,7 @@ constexpr inline uint16_t gate_name_to_hash(std::string_view text) {
     return result & 0x1FF;
 }
 
-constexpr size_t NUM_DEFINED_GATES = 85;
+constexpr size_t NUM_DEFINED_GATES = 86;
 
 enum class GateType : uint8_t {
     NOT_A_GATE = 0,
@@ -192,6 +192,11 @@ enum class GateType : uint8_t {
     ROTATION_X,
     ROTATION_Y,
     ROTATION_Z,
+    // Syntax-only generic rotation gate.
+    //
+    // The Pauli axis letters (e.g. the "XYZ" in "ROTATION[XYZ](0.5) 0 1 2")
+    // are stored in the instruction's tag rather than in the gate name.
+    ROTATION,
 };
 
 enum GateFlags : uint16_t {
@@ -319,9 +324,9 @@ struct Gate {
     ///
     /// ROTATION_X/Y/Z take exactly one angle argument (std::invalid_argument
     /// otherwise). Other gates ignore the arguments. Throws std::out_of_range
-    /// for gates with no unitary matrix.
-    std::vector<std::vector<std::complex<double>>> unitary(
-        SpanRef<const double> args) const;
+    /// for gates with no unitary matrix. The generic ROTATION gate has no
+    /// unitary matrix here, because its axis lives in the instruction tag.
+    std::vector<std::vector<std::complex<double>>> unitary(SpanRef<const double> args) const;
 
     /// Returns whether the gate's unitary matrix depends on its parens arguments.
     bool has_parameterized_unitary() const;

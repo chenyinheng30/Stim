@@ -923,7 +923,7 @@ Circuit Circuit::inverse(bool allow_weak_inverse) const {
         auto flags = gate_data.flags;
         if (flags & GATE_IS_UNITARY) {
             // Unitary gates always have an inverse.
-        } else if (gate_data.has_parameterized_unitary()) {
+        } else if (gate_data.has_parameterized_unitary() || op.gate_type == GateType::ROTATION) {
             // The inverse of a parameterized rotation is the same gate with the angle negated.
             args_buf.clear();
             for (const auto &a : op.args) {

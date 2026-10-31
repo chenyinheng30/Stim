@@ -170,6 +170,27 @@ void CircuitInstruction::validate() const {
             "Gate " + std::string(gate.name) + " takes no targets but was given targets" + targets_str(targets) + ".");
     }
 
+    if (gate_type == GateType::ROTATION) {
+        // The Pauli axis letters live in the tag, one per target in each group.
+        if (tag.empty()) {
+            throw std::invalid_argument(
+                "Gate ROTATION requires the Pauli axis letters in its tag, e.g. 'ROTATION[XYZ](0.5) 0 1 2'.");
+        }
+        for (char c : tag) {
+            if (c != 'I' && c != 'X' && c != 'Y' && c != 'Z' && c != 'i' && c != 'x' && c != 'y' && c != 'z') {
+                throw std::invalid_argument(
+                    "The tag of gate ROTATION must only contain the Pauli axis letters I, X, Y, and Z, but got '" +
+                    std::string(tag) + "'.");
+            }
+        }
+        if (targets.size() % tag.size() != 0) {
+            throw std::invalid_argument(
+                "Gate ROTATION requires a multiple of " + std::to_string(tag.size()) +
+                " targets (one per axis letter in '" + std::string(tag) + "'), but was given " +
+                std::to_string(targets.size()) + " targets.");
+        }
+    }
+
     if (gate.flags & GATE_ARGS_ARE_DISJOINT_PROBABILITIES) {
         double total = 0;
         for (const auto p : args) {

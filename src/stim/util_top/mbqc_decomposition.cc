@@ -28,6 +28,7 @@ const char *stim::mbqc_decomposition(GateType gate) {
         case GateType::ROTATION_X:
         case GateType::ROTATION_Y:
         case GateType::ROTATION_Z:
+        case GateType::ROTATION:
             return nullptr;
         case GateType::MX:
             return R"CIRCUIT(

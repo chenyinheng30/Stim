@@ -503,6 +503,11 @@ struct Simplifier {
                 yield(inst);
                 break;
 
+            case GateType::ROTATION:
+                // Syntax-only rotations aren't simplified.
+                yield(inst);
+                break;
+
             case GateType::DETECTOR:
             case GateType::OBSERVABLE_INCLUDE:
             case GateType::TICK:

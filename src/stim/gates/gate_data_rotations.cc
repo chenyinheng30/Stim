@@ -79,4 +79,35 @@ This instruction is retained in parsed circuits but cannot be simulated by Stim.
             .flow_data = {},
             .h_s_cx_m_r_decomposition = nullptr,
         });
+
+    add_gate(
+        failed,
+        Gate{
+            .name = "ROTATION",
+            .id = GateType::ROTATION,
+            // Self-inverse as a gate type: ROTATION[XYZ](t)^-1 = ROTATION[XYZ](-t).
+            .best_candidate_inverse_id = GateType::ROTATION,
+            .arg_count = 1,
+            .flags = GATE_IS_NOT_FUSABLE,
+            .category = "C_Parameterized Rotation Gates",
+            .help = R"MARKDOWN(
+Syntax-only rotation about a Pauli product axis given in the tag.
+
+The tag holds one Pauli axis letter ('I', 'X', 'Y', or 'Z') per target, so
+`ROTATION[XYZ](0.5) 0 1 2` rotates qubits 0, 1, and 2 about the XYZ axis.
+The targets are grouped in chunks as long as the tag, and the number of
+targets must be a multiple of the tag length.
+
+The angle is specified in radians.
+This instruction is retained in parsed circuits but cannot be simulated by Stim.
+
+Example:
+    ROTATION[XY](0.25) 0 1
+    ROTATION[XYZ](0.5) 0 1 2 3 4 5
+    ROTATION[Z](1) 5
+)MARKDOWN",
+            .unitary_data = {},
+            .flow_data = {},
+            .h_s_cx_m_r_decomposition = nullptr,
+        });
 }

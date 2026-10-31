@@ -99,6 +99,7 @@ std::map<std::string_view, SvgGateData> SvgGateData::make_gate_data_map() {
     result.insert({"ROTATION_X", {1, "R", "X", "", "white", "black", 26, 16, 0}});
     result.insert({"ROTATION_Y", {1, "R", "Y", "", "white", "black", 26, 16, 0}});
     result.insert({"ROTATION_Z", {1, "R", "Z", "", "white", "black", 26, 16, 0}});
+    result.insert({"ROTATION", {1, "R", "", "", "white", "black", 26, 16, 0}});
 
     return result;
 }
